@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Bus Tracking Login</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family:
+                    Arial,
+                    sans-serif;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #123458,
+                            #1e6fa8
+                    );
+        }
+
+        .login-container {
+            width: 92%;
+            max-width: 430px;
+
+            padding: 35px;
+
+            background-color: white;
+
+            border-radius: 18px;
+
+            box-shadow:
+                    0 15px 40px
+                    rgba(0, 0, 0, 0.25);
+        }
+
+        .bus-logo {
+            text-align: center;
+            font-size: 65px;
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            margin: 5px 0;
+
+            color: #1e3a5f;
+
+            text-align: center;
+        }
+
+        .subtitle {
+            margin-bottom: 28px;
+
+            color: #666666;
+
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #333333;
+
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 13px;
+
+            font-size: 16px;
+
+            border:
+                    1px solid
+                    #bbbbbb;
+
+            border-radius: 8px;
+
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1e6fa8;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(30, 111, 168, 0.15);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            padding-right: 55px;
+        }
+
+        .show-password {
+            position: absolute;
+
+            top: 50%;
+            right: 12px;
+
+            transform:
+                    translateY(-50%);
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 20px;
+
+            cursor: pointer;
+        }
+
+        .login-button {
+            width: 100%;
+
+            margin-top: 5px;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            color: white;
+
+            background-color: #198754;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background-color: #146c43;
+        }
+
+        .message {
+            display: none;
+
+            margin-bottom: 20px;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            line-height: 1.5;
+        }
+
+        .error-message {
+            color: #842029;
+
+            background-color: #f8d7da;
+
+            border:
+                    1px solid
+                    #f5c2c7;
+        }
+
+        .logout-message {
+            color: #0f5132;
+
+            background-color: #d1e7dd;
+
+            border:
+                    1px solid
+                    #badbcc;
+        }
+
+        .login-information {
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background-color: #eef4fa;
+
+            border-radius: 9px;
+
+            color: #555555;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+        .login-information strong {
+            color: #1e3a5f;
+        }
+
+        .footer {
+            margin-top: 22px;
+
+            color: #777777;
+
+            text-align: center;
+
+            font-size: 13px;
+        }
+
+        @media (
+                max-width: 500px
+        ) {
+
+            .login-container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-container">
+
+
+    <div class="bus-logo">
+
+        🚌
+
+    </div>
+
+
+    <h1>
+
+        Bus Tracking System
+
+    </h1>
+
+
+    <p class="subtitle">
+
+        Sign in to continue
+
+    </p>
+
+
+    <!-- Invalid login message -->
+
+    <div
+            id="errorMessage"
+            class="
+                message
+                error-message
+            "
+    >
+
+        ❌ Invalid username or password.
+
+        <br>
+
+        Please check your login details.
+
+    </div>
+
+
+    <!-- Logout success message -->
+
+    <div
+            id="logoutMessage"
+            class="
+                message
+                logout-message
+            "
+    >
+
+        ✅ You have logged out successfully.
+
+    </div>
+
+
+    <!-- Spring Security Login Form -->
+
+    <form
+
+            action="/login"
+
+            method="POST"
+
+    >
+
+
+        <div class="input-group">
+
+
+            <label for="username">
+
+                Username
+
+            </label>
+
+
+            <input
+
+                    type="text"
+
+                    id="username"
+
+                    name="username"
+
+                    placeholder="Enter your username"
+
+                    autocomplete="username"
+
+                    required
+
+                    autofocus
+
+            >
+
+
+        </div>
+
+
+
+        <div class="input-group">
+
+
+            <label for="password">
+
+                Password
+
+            </label>
+
+
+            <div class="password-container">
+
+
+                <input
+
+                        type="password"
+
+                        id="password"
+
+                        name="password"
+
+                        placeholder="Enter your password"
+
+                        autocomplete="current-password"
+
+                        required
+
+                >
+
+
+                <button
+
+                        type="button"
+
+                        class="show-password"
+
+                        onclick="togglePassword()"
+
+                        title="Show or hide password"
+
+                >
+
+                    👁️
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <button
+
+                type="submit"
+
+                class="login-button"
+
+        >
+
+            🔐 Login
+
+        </button>
+
+
+    </form>
+
+
+
+    <!-- Temporary testing accounts -->
+
+    <div class="login-information">
+
+
+        <strong>
+
+            Testing Accounts
+
+        </strong>
+
+
+        <br>
+
+
+        Admin:
+
+        <strong>
+
+            admin / admin123
+
+        </strong>
+
+
+        <br>
+
+
+        Coordinator:
+
+        <strong>
+
+            coordinator / bus123
+
+        </strong>
+
+
+        <br>
+
+
+        Student:
+
+        <strong>
+
+            student / student123
+
+        </strong>
+
+
+    </div>
+
+
+
+    <div class="footer">
+
+        College Bus Live Tracking System
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    /*
+       SHOW OR HIDE PASSWORD
+    */
+
+
+    function togglePassword() {
+
+
+        const passwordInput =
+
+            document.getElementById(
+
+                "password"
+
+            );
+
+
+        if (
+
+            passwordInput.type
+
+            ===
+
+            "password"
+
+        ) {
+
+
+            passwordInput.type =
+
+                "text";
+
+
+        }
+
+
+        else {
+
+
+            passwordInput.type =
+
+                "password";
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       READ URL PARAMETERS
+
+       ?error=true
+
+       ?logout=true
+    */
+
+
+    const urlParameters =
+
+        new URLSearchParams(
+
+            window.location.search
+
+        );
+
+
+
+    /*
+       SHOW LOGIN ERROR
+    */
+
+
+    if (
+
+        urlParameters.has(
+
+            "error"
+
+        )
+
+    ) {
+
+
+        document.getElementById(
+
+            "errorMessage"
+
+        ).style.display =
+
+            "block";
+
+
+    }
+
+
+
+    /*
+       SHOW LOGOUT MESSAGE
+    */
+
+
+    if (
+
+        urlParameters.has(
+
+            "logout"
+
+        )
+
+    ) {
+
+
+        document.getElementById(
+
+            "logoutMessage"
+
+        ).style.display =
+
+            "block";
+
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

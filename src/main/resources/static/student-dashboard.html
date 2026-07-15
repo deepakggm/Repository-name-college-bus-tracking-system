@@ -1,0 +1,2671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Student Dashboard
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                    Arial,
+                    sans-serif;
+
+            color: #263238;
+
+            background-color: #f3f6fa;
+
+        }
+
+
+        /* NAVIGATION */
+
+        .navbar {
+
+            min-height: 72px;
+
+            padding: 15px 30px;
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #123458,
+                            #1e6fa8
+                    );
+
+            box-shadow:
+                    0 3px 12px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.18
+                    );
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .brand-icon {
+            font-size: 40px;
+        }
+
+
+        .brand h1 {
+
+            margin: 0;
+
+            font-size: 24px;
+
+        }
+
+
+        .brand p {
+
+            margin: 4px 0 0;
+
+            color: #d8eaf8;
+
+            font-size: 13px;
+
+        }
+
+
+        .logout-button {
+
+            padding: 11px 18px;
+
+            color: white;
+
+            background-color: #dc3545;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+
+        .logout-button:hover {
+            background-color: #b52a37;
+        }
+
+
+        /* MAIN */
+
+        .main-container {
+
+            width: 94%;
+
+            max-width: 1300px;
+
+            margin: 30px auto;
+
+        }
+
+
+        /* WELCOME */
+
+        .welcome-card {
+
+            padding: 30px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #198754,
+                            #20a96b
+                    );
+
+            border-radius: 17px;
+
+            box-shadow:
+                    0 5px 18px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.14
+                    );
+
+        }
+
+
+        .welcome-card h2 {
+
+            margin: 0 0 10px;
+
+            font-size: 30px;
+
+        }
+
+
+        .welcome-card p {
+
+            margin: 0;
+
+            line-height: 1.7;
+
+        }
+
+
+        /* STATISTICS */
+
+        .section-title {
+
+            margin: 34px 0 18px;
+
+            color: #1e3a5f;
+
+        }
+
+
+        .statistics-container {
+
+            display: grid;
+
+            grid-template-columns:
+
+                    repeat(
+
+                            auto-fit,
+
+                            minmax(
+                                    210px,
+                                    1fr
+                            )
+
+                    );
+
+            gap: 20px;
+
+        }
+
+
+        .statistics-card {
+
+            padding: 24px;
+
+            background-color: white;
+
+            border-radius: 14px;
+
+            box-shadow:
+                    0 4px 15px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.10
+                    );
+
+        }
+
+
+        .statistics-icon {
+            font-size: 39px;
+        }
+
+
+        .statistics-number {
+
+            margin: 14px 0 5px;
+
+            color: #1e3a5f;
+
+            font-size: 33px;
+
+            font-weight: bold;
+
+        }
+
+
+        .statistics-name {
+            color: #68747c;
+        }
+
+
+        /* BUS SECTION */
+
+        .bus-section {
+
+            margin-top: 25px;
+
+            padding: 25px;
+
+            background-color: white;
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 4px 15px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.10
+                    );
+
+        }
+
+
+        .bus-header {
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .bus-header h2 {
+
+            margin: 0;
+
+            color: #1e3a5f;
+
+        }
+
+
+        .refresh-button {
+
+            padding: 11px 17px;
+
+            color: white;
+
+            background-color: #0d6efd;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+
+        .refresh-button:hover {
+            background-color: #0a58ca;
+        }
+
+
+        /* BUS CARDS */
+
+        .bus-container {
+
+            display: grid;
+
+            grid-template-columns:
+
+                    repeat(
+
+                            auto-fit,
+
+                            minmax(
+                                    310px,
+                                    1fr
+                            )
+
+                    );
+
+            gap: 22px;
+
+        }
+
+
+        .bus-card {
+
+            overflow: hidden;
+
+            border:
+                    1px solid
+                    #dde3e8;
+
+            border-radius: 16px;
+
+            background-color: white;
+
+            box-shadow:
+                    0 4px 14px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.09
+                    );
+
+            transition:
+                    transform
+                    0.2s,
+                    box-shadow
+                    0.2s;
+
+        }
+
+
+        .bus-card:hover {
+
+            transform:
+                    translateY(
+                            -5px
+                    );
+
+            box-shadow:
+                    0 8px 20px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.13
+                    );
+
+        }
+
+
+        .bus-card-header {
+
+            padding: 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #1e3a5f,
+                            #2878ad
+                    );
+
+        }
+
+
+        .bus-icon {
+            font-size: 47px;
+        }
+
+
+        .bus-card-header h3 {
+
+            margin: 0 0 6px;
+
+            font-size: 21px;
+
+        }
+
+
+        .bus-number {
+
+            color: #d8eaf8;
+
+            font-size: 14px;
+
+        }
+
+
+        .bus-card-body {
+            padding: 22px;
+        }
+
+
+        .information-row {
+
+            margin-bottom: 15px;
+
+            padding-bottom: 13px;
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            gap: 15px;
+
+            border-bottom:
+                    1px solid
+                    #edf0f2;
+
+        }
+
+
+        .information-label {
+
+            color: #66737b;
+
+            font-weight: bold;
+
+        }
+
+
+        .information-value {
+
+            max-width: 60%;
+
+            color: #263238;
+
+            text-align: right;
+
+            overflow-wrap:
+                    anywhere;
+
+        }
+
+
+        /* STATUS */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+        }
+
+
+        .active-status {
+
+            color: #0f5132;
+
+            background-color: #d1e7dd;
+
+        }
+
+
+        .inactive-status {
+
+            color: #842029;
+
+            background-color: #f8d7da;
+
+        }
+
+
+        .waiting-status {
+
+            color: #664d03;
+
+            background-color: #fff3cd;
+
+        }
+
+
+        .live-status {
+
+            color: #0f5132;
+
+            background-color: #d1e7dd;
+
+        }
+
+
+        .old-status {
+
+            color: #842029;
+
+            background-color: #f8d7da;
+
+        }
+
+
+        /* ROUTE */
+
+        .route-box {
+
+            margin-top: 18px;
+
+            padding: 17px;
+
+            background-color: #eef5fb;
+
+            border-left:
+                    5px solid
+                    #0d6efd;
+
+            border-radius: 9px;
+
+        }
+
+
+        .route-title {
+
+            margin-bottom: 10px;
+
+            color: #1e3a5f;
+
+            font-weight: bold;
+
+        }
+
+
+        .route-path {
+
+            color: #263238;
+
+            line-height: 1.6;
+
+            font-weight: bold;
+
+        }
+
+
+        /* LOCATION */
+
+        .location-box {
+
+            margin-top: 15px;
+
+            padding: 17px;
+
+            background-color: #eef9f3;
+
+            border-left:
+                    5px solid
+                    #198754;
+
+            border-radius: 9px;
+
+        }
+
+
+        .location-title {
+
+            margin-bottom: 8px;
+
+            color: #146c43;
+
+            font-weight: bold;
+
+        }
+
+
+        .location-name {
+
+            color: #263238;
+
+            line-height: 1.5;
+
+            overflow-wrap:
+                    anywhere;
+
+        }
+
+
+        .update-time {
+
+            margin-top: 9px;
+
+            color: #68747c;
+
+            font-size: 13px;
+
+        }
+
+
+        /* MAP BUTTON */
+
+        .map-button {
+
+            display: block;
+
+            width: 100%;
+
+            margin-top: 19px;
+
+            padding: 13px;
+
+            color: white;
+
+            background-color: #198754;
+
+            border-radius: 9px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+        }
+
+
+        .map-button:hover {
+            background-color: #146c43;
+        }
+
+
+        /* LOADING */
+
+        .empty-message {
+
+            grid-column:
+                    1 / -1;
+
+            padding: 40px;
+
+            color: #6c757d;
+
+            text-align: center;
+
+            font-weight: bold;
+
+        }
+
+
+        /* ERROR */
+
+        #message {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            color: #842029;
+
+            background-color: #f8d7da;
+
+            border:
+                    1px solid
+                    #f5c2c7;
+
+            border-radius: 9px;
+
+            text-align: center;
+
+            font-weight: bold;
+
+        }
+
+
+        /* FOOTER */
+
+        .footer {
+
+            margin-top: 40px;
+
+            padding: 22px;
+
+            color: #6c757d;
+
+            text-align: center;
+
+        }
+
+
+        /* MOBILE */
+
+        @media (
+                max-width: 650px
+        ) {
+
+
+            .navbar {
+                padding: 15px;
+            }
+
+
+            .brand h1 {
+                font-size: 20px;
+            }
+
+
+            .welcome-card {
+
+                padding: 23px;
+
+            }
+
+
+            .welcome-card h2 {
+                font-size: 24px;
+            }
+
+
+            .bus-section {
+                padding: 16px;
+            }
+
+
+            .bus-container {
+
+                grid-template-columns:
+                        1fr;
+
+            }
+
+
+            .information-row {
+
+                display: block;
+
+            }
+
+
+            .information-value {
+
+                max-width: 100%;
+
+                margin-top: 6px;
+
+                text-align: left;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- NAVIGATION -->
+
+<header class="navbar">
+
+
+    <div class="brand">
+
+
+        <div class="brand-icon">
+            🚌
+        </div>
+
+
+        <div>
+
+
+            <h1>
+                Student Dashboard
+            </h1>
+
+
+            <p>
+                College Bus Tracking System
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+    <form
+            action="/logout"
+            method="POST"
+    >
+
+
+        <button
+                type="submit"
+                class="logout-button"
+        >
+
+            🚪 Logout
+
+        </button>
+
+
+    </form>
+
+
+</header>
+
+
+
+<!-- MAIN -->
+
+<main class="main-container">
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome-card">
+
+
+        <h2>
+            Welcome, Student 👋
+        </h2>
+
+
+        <p>
+
+            View the active trip, route and
+            latest real GPS location of your
+            college bus.
+
+        </p>
+
+
+    </section>
+
+
+
+    <!-- ERROR -->
+
+    <div id="message"></div>
+
+
+
+    <!-- OVERVIEW -->
+
+    <h2 class="section-title">
+
+        📊 Live Bus Overview
+
+    </h2>
+
+
+    <section class="statistics-container">
+
+
+        <div class="statistics-card">
+
+
+            <div class="statistics-icon">
+                🚌
+            </div>
+
+
+            <div
+                    id="totalBuses"
+                    class="statistics-number"
+            >
+
+                0
+
+            </div>
+
+
+            <div class="statistics-name">
+
+                Available Buses
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="statistics-card">
+
+
+            <div class="statistics-icon">
+                🛣️
+            </div>
+
+
+            <div
+                    id="activeTrips"
+                    class="statistics-number"
+            >
+
+                0
+
+            </div>
+
+
+            <div class="statistics-name">
+
+                Active Trips
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="statistics-card">
+
+
+            <div class="statistics-icon">
+                📍
+            </div>
+
+
+            <div
+                    id="liveLocations"
+                    class="statistics-number"
+            >
+
+                0
+
+            </div>
+
+
+            <div class="statistics-name">
+
+                Recent GPS Locations
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- BUS LIST -->
+
+    <section class="bus-section">
+
+
+        <div class="bus-header">
+
+
+            <h2>
+
+                🚌 Select Your College Bus
+
+            </h2>
+
+
+            <button
+
+                    type="button"
+
+                    class="refresh-button"
+
+                    onclick="loadDashboard()"
+
+            >
+
+                🔄 Refresh Live Data
+
+            </button>
+
+
+        </div>
+
+
+        <div
+
+                id="busContainer"
+
+                class="bus-container"
+
+        >
+
+
+            <div class="empty-message">
+
+                Loading live bus information...
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<footer class="footer">
+
+    College Bus Tracking System
+
+    <br>
+
+    Student Live Tracking Portal
+
+</footer>
+
+
+
+<script>
+
+
+    /*
+       DASHBOARD COUNTERS
+    */
+
+    let activeTripCount = 0;
+
+    let recentLocationCount = 0;
+
+
+
+    /*
+       LOAD COMPLETE
+       STUDENT DASHBOARD
+    */
+
+    async function loadDashboard() {
+
+
+        hideError();
+
+
+        activeTripCount = 0;
+
+        recentLocationCount = 0;
+
+
+        updateCounters();
+
+
+        const busContainer =
+
+            document.getElementById(
+
+                "busContainer"
+
+            );
+
+
+        busContainer.innerHTML =
+
+            `
+
+            <div class="empty-message">
+
+                Loading real bus information...
+
+            </div>
+
+            `;
+
+
+
+        try {
+
+
+            /*
+               GET ALL BUSES
+            */
+
+            const response =
+
+                await fetch(
+
+                    "/api/buses"
+
+                );
+
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                throw new Error(
+
+                    "Bus API returned HTTP "
+
+                    +
+
+                    response.status
+
+                );
+
+            }
+
+
+
+            const responseData =
+
+                await response.json();
+
+
+
+            const buses =
+
+                Array.isArray(
+
+                    responseData
+
+                )
+
+                    ?
+
+                    responseData
+
+                    :
+
+                    [];
+
+
+
+            document
+
+                .getElementById(
+
+                    "totalBuses"
+
+                )
+
+                .innerText =
+
+                    buses.length;
+
+
+
+            if (
+
+                buses.length
+
+                ===
+
+                0
+
+            ) {
+
+
+                busContainer.innerHTML =
+
+                    `
+
+                    <div class="empty-message">
+
+                        No buses are available.
+
+                    </div>
+
+                    `;
+
+
+                return;
+
+            }
+
+
+
+            /*
+               LOAD TRIP,
+               ROUTE AND GPS
+               FOR EVERY BUS.
+            */
+
+            const completeBusData =
+
+                await Promise.all(
+
+
+                    buses.map(
+
+
+                        async function (
+
+                            bus
+
+                        ) {
+
+
+                            return await
+
+                                loadBusLiveData(
+
+                                    bus
+
+                                );
+
+
+                        }
+
+
+                    )
+
+
+                );
+
+
+
+            displayBuses(
+
+                completeBusData
+
+            );
+
+
+            updateCounters();
+
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            console.error(
+
+                "Student dashboard error:",
+
+                error
+
+            );
+
+
+            busContainer.innerHTML =
+
+                `
+
+                <div class="empty-message">
+
+                    ❌ Unable to load bus information.
+
+                </div>
+
+                `;
+
+
+            showError(
+
+                "Unable to connect to the Bus API. "
+
+                +
+
+                error.message
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       LOAD LIVE INFORMATION
+       FOR ONE BUS
+    */
+
+    async function loadBusLiveData(
+
+        bus
+
+    ) {
+
+
+        const completeData = {
+
+
+            bus:
+
+                bus,
+
+
+            trip:
+
+                null,
+
+
+            route:
+
+                null,
+
+
+            location:
+
+                null,
+
+
+            locationCondition:
+
+                "WAITING"
+
+
+        };
+
+
+
+        /*
+           GET ACTIVE TRIP
+        */
+
+        try {
+
+
+            const tripResponse =
+
+                await fetch(
+
+                    "/api/trips/active/"
+
+                    +
+
+                    bus.id
+
+                );
+
+
+
+            if (
+
+                tripResponse.ok
+
+            ) {
+
+
+                completeData.trip =
+
+                    await tripResponse.json();
+
+
+                activeTripCount++;
+
+
+
+                /*
+                   GET ROUTE USING
+                   ACTIVE TRIP
+                   ROUTE ID.
+                */
+
+                if (
+
+                    completeData.trip.routeId
+
+                    !==
+
+                    null
+
+                    &&
+
+                    completeData.trip.routeId
+
+                    !==
+
+                    undefined
+
+                ) {
+
+
+                    try {
+
+
+                        const routeResponse =
+
+                            await fetch(
+
+                                "/api/routes/"
+
+                                +
+
+                                completeData.trip.routeId
+
+                            );
+
+
+
+                        if (
+
+                            routeResponse.ok
+
+                        ) {
+
+
+                            completeData.route =
+
+                                await routeResponse.json();
+
+                        }
+
+
+                    }
+
+
+                    catch (
+
+                        routeError
+
+                    ) {
+
+
+                        console.error(
+
+                            "Route error for bus "
+
+                            +
+
+                            bus.id,
+
+                            routeError
+
+                        );
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        }
+
+
+        catch (
+
+            tripError
+
+        ) {
+
+
+            console.log(
+
+                "No active trip for bus "
+
+                +
+
+                bus.id
+
+            );
+
+        }
+
+
+
+        /*
+           GET LATEST REAL
+           GPS LOCATION
+
+           NO FAKE COORDINATES
+           ARE CREATED.
+        */
+
+        try {
+
+
+            const locationResponse =
+
+                await fetch(
+
+                    "/api/locations/bus/"
+
+                    +
+
+                    bus.id
+
+                );
+
+
+
+            if (
+
+                locationResponse.ok
+
+            ) {
+
+
+                const location =
+
+                    await locationResponse.json();
+
+
+
+                /*
+                   VERIFY GPS
+                   BELONGS TO
+                   THIS BUS.
+                */
+
+                if (
+
+                    location.busId
+
+                    ===
+
+                    undefined
+
+                    ||
+
+                    Number(
+
+                        location.busId
+
+                    )
+
+                    ===
+
+                    Number(
+
+                        bus.id
+
+                    )
+
+                ) {
+
+
+                    completeData.location =
+
+                        location;
+
+
+                    completeData.locationCondition =
+
+                        getLocationCondition(
+
+                            location.updatedAt
+
+                        );
+
+
+                    if (
+
+                        completeData.locationCondition
+
+                        ===
+
+                        "LIVE"
+
+                    ) {
+
+
+                        recentLocationCount++;
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        }
+
+
+        catch (
+
+            locationError
+
+        ) {
+
+
+            console.log(
+
+                "No GPS location for bus "
+
+                +
+
+                bus.id
+
+            );
+
+        }
+
+
+
+        return completeData;
+
+    }
+
+
+
+    /*
+       CHECK GPS DATA AGE
+
+       6 MINUTES IS USED
+       BECAUSE THE GPS MAY
+       UPDATE EVERY 5 MINUTES.
+    */
+
+    function getLocationCondition(
+
+        updatedAt
+
+    ) {
+
+
+        if (
+
+            !updatedAt
+
+        ) {
+
+
+            return "WAITING";
+
+        }
+
+
+
+        const updateTime =
+
+            new Date(
+
+                updatedAt
+
+            )
+
+                .getTime();
+
+
+
+        if (
+
+            Number.isNaN(
+
+                updateTime
+
+            )
+
+        ) {
+
+
+            return "WAITING";
+
+        }
+
+
+
+        const currentTime =
+
+            new Date()
+
+                .getTime();
+
+
+
+        const differenceInMinutes =
+
+            (
+
+                currentTime
+
+                -
+
+                updateTime
+
+            )
+
+            /
+
+            60000;
+
+
+
+        if (
+
+            differenceInMinutes
+
+            <=
+
+            6
+
+        ) {
+
+
+            return "LIVE";
+
+        }
+
+
+
+        return "OLD";
+
+    }
+
+
+
+    /*
+       DISPLAY BUS CARDS
+    */
+
+    function displayBuses(
+
+        completeBusData
+
+    ) {
+
+
+        const busContainer =
+
+            document.getElementById(
+
+                "busContainer"
+
+            );
+
+
+        busContainer.innerHTML =
+
+            "";
+
+
+
+        completeBusData.forEach(
+
+
+            function (
+
+                information
+
+            ) {
+
+
+                const bus =
+
+                    information.bus;
+
+
+                const trip =
+
+                    information.trip;
+
+
+                const route =
+
+                    information.route;
+
+
+                const location =
+
+                    information.location;
+
+
+
+                /*
+                   BUS STATUS
+                */
+
+                const busStatus =
+
+                    String(
+
+                        bus.status
+
+                        ||
+
+                        "INACTIVE"
+
+                    )
+
+                        .toUpperCase();
+
+
+
+                const busStatusClass =
+
+                    busStatus
+
+                    ===
+
+                    "ACTIVE"
+
+                        ?
+
+                        "active-status"
+
+                        :
+
+                        "inactive-status";
+
+
+
+                /*
+                   TRIP STATUS
+                */
+
+                const tripText =
+
+                    trip
+
+                        ?
+
+                        "🟢 TRIP RUNNING"
+
+                        :
+
+                        "⚪ NO ACTIVE TRIP";
+
+
+
+                const tripClass =
+
+                    trip
+
+                        ?
+
+                        "active-status"
+
+                        :
+
+                        "waiting-status";
+
+
+
+                /*
+                   ROUTE DETAILS
+                */
+
+                const routeName =
+
+                    route
+
+                        ?
+
+                        route.routeName
+
+                        :
+
+                        "No active route";
+
+
+
+                const routePath =
+
+                    route
+
+                        ?
+
+                        escapeHtml(
+
+                            route.startingLocation
+
+                        )
+
+                        +
+
+                        " → "
+
+                        +
+
+                        escapeHtml(
+
+                            route.endingLocation
+
+                        )
+
+                        :
+
+                        "Route will appear after the trip starts";
+
+
+
+                /*
+                   REAL GPS
+                   LOCATION DETAILS
+                */
+
+                let locationName =
+
+                    "Waiting for GPS data";
+
+
+                let locationStatus =
+
+                    "⚪ WAITING FOR GPS";
+
+
+                let locationClass =
+
+                    "waiting-status";
+
+
+                let updatedTime =
+
+                    "--";
+
+
+
+                if (
+
+                    location
+
+                ) {
+
+
+                    locationName =
+
+                        location.locationName
+
+                        ||
+
+                        "GPS coordinates received";
+
+
+                    updatedTime =
+
+                        formatDate(
+
+                            location.updatedAt
+
+                        );
+
+
+
+                    if (
+
+                        information.locationCondition
+
+                        ===
+
+                        "LIVE"
+
+                    ) {
+
+
+                        locationStatus =
+
+                            "🟢 LIVE LOCATION";
+
+
+                        locationClass =
+
+                            "live-status";
+
+                    }
+
+
+                    else {
+
+
+                        locationStatus =
+
+                            "⚠️ OLD GPS DATA";
+
+
+                        locationClass =
+
+                            "old-status";
+
+                    }
+
+
+                }
+
+
+
+                /*
+                   CREATE CARD
+                */
+
+                const busCard =
+
+                    document.createElement(
+
+                        "article"
+
+                    );
+
+
+                busCard.className =
+
+                    "bus-card";
+
+
+
+                busCard.innerHTML =
+
+                    `
+
+                    <div class="bus-card-header">
+
+
+                        <div class="bus-icon">
+
+                            🚌
+
+                        </div>
+
+
+                        <div>
+
+
+                            <h3>
+
+                                ${escapeHtml(
+
+                                    bus.busName
+
+                                )}
+
+                            </h3>
+
+
+                            <div class="bus-number">
+
+                                ${escapeHtml(
+
+                                    bus.busNumber
+
+                                )}
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="bus-card-body">
+
+
+                        <div class="information-row">
+
+
+                            <div class="information-label">
+
+                                Bus ID
+
+                            </div>
+
+
+                            <div class="information-value">
+
+                                ${escapeHtml(
+
+                                    bus.id
+
+                                )}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="information-row">
+
+
+                            <div class="information-label">
+
+                                Capacity
+
+                            </div>
+
+
+                            <div class="information-value">
+
+                                ${escapeHtml(
+
+                                    bus.capacity
+
+                                )}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="information-row">
+
+
+                            <div class="information-label">
+
+                                Bus Status
+
+                            </div>
+
+
+                            <div class="information-value">
+
+
+                                <span
+
+                                    class="status
+
+                                    ${busStatusClass}"
+
+                                >
+
+                                    ${escapeHtml(
+
+                                        busStatus
+
+                                    )}
+
+                                </span>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="information-row">
+
+
+                            <div class="information-label">
+
+                                Trip Status
+
+                            </div>
+
+
+                            <div class="information-value">
+
+
+                                <span
+
+                                    class="status
+
+                                    ${tripClass}"
+
+                                >
+
+                                    ${tripText}
+
+                                </span>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="route-box">
+
+
+                            <div class="route-title">
+
+                                🛣️
+
+                                ${escapeHtml(
+
+                                    routeName
+
+                                )}
+
+                            </div>
+
+
+                            <div class="route-path">
+
+                                ${routePath}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="location-box">
+
+
+                            <div class="location-title">
+
+                                📍 Latest Real GPS Location
+
+                            </div>
+
+
+                            <div>
+
+
+                                <span
+
+                                    class="status
+
+                                    ${locationClass}"
+
+                                >
+
+                                    ${locationStatus}
+
+                                </span>
+
+
+                            </div>
+
+
+                            <p class="location-name">
+
+                                ${escapeHtml(
+
+                                    locationName
+
+                                )}
+
+                            </p>
+
+
+                            <div class="update-time">
+
+                                Last GPS update:
+
+                                ${escapeHtml(
+
+                                    updatedTime
+
+                                )}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <a
+
+                            href="/student-map.html?busId=${
+
+                                encodeURIComponent(
+
+                                    bus.id
+
+                                )
+
+                            }"
+
+                            class="map-button"
+
+                        >
+
+                            📍 Track Live Bus
+
+                        </a>
+
+
+                    </div>
+
+                    `;
+
+
+
+                busContainer
+
+                    .appendChild(
+
+                        busCard
+
+                    );
+
+
+            }
+
+
+        );
+
+    }
+
+
+
+    /*
+       UPDATE STATISTICS
+    */
+
+    function updateCounters() {
+
+
+        document
+
+            .getElementById(
+
+                "activeTrips"
+
+            )
+
+            .innerText =
+
+                activeTripCount;
+
+
+
+        document
+
+            .getElementById(
+
+                "liveLocations"
+
+            )
+
+            .innerText =
+
+                recentLocationCount;
+
+    }
+
+
+
+    /*
+       DATE FORMAT
+    */
+
+    function formatDate(
+
+        value
+
+    ) {
+
+
+        if (
+
+            !value
+
+        ) {
+
+
+            return "--";
+
+        }
+
+
+
+        const date =
+
+            new Date(
+
+                value
+
+            );
+
+
+
+        if (
+
+            Number.isNaN(
+
+                date.getTime()
+
+            )
+
+        ) {
+
+
+            return value;
+
+        }
+
+
+
+        return date
+
+            .toLocaleString(
+
+                "en-IN"
+
+            );
+
+    }
+
+
+
+    /*
+       SHOW ERROR
+    */
+
+    function showError(
+
+        errorMessage
+
+    ) {
+
+
+        const message =
+
+            document.getElementById(
+
+                "message"
+
+            );
+
+
+        message.innerText =
+
+            "❌ "
+
+            +
+
+            errorMessage;
+
+
+        message.style.display =
+
+            "block";
+
+    }
+
+
+
+    /*
+       HIDE ERROR
+    */
+
+    function hideError() {
+
+
+        const message =
+
+            document.getElementById(
+
+                "message"
+
+            );
+
+
+        message.style.display =
+
+            "none";
+
+
+        message.innerText =
+
+            "";
+
+    }
+
+
+
+    /*
+       PREVENT HTML
+       INJECTION
+    */
+
+    function escapeHtml(
+
+        value
+
+    ) {
+
+
+        if (
+
+            value
+
+            ===
+
+            null
+
+            ||
+
+            value
+
+            ===
+
+            undefined
+
+        ) {
+
+
+            return "--";
+
+        }
+
+
+
+        return String(
+
+            value
+
+        )
+
+            .replaceAll(
+
+                "&",
+
+                "&amp;"
+
+            )
+
+            .replaceAll(
+
+                "<",
+
+                "&lt;"
+
+            )
+
+            .replaceAll(
+
+                ">",
+
+                "&gt;"
+
+            )
+
+            .replaceAll(
+
+                "\"",
+
+                "&quot;"
+
+            )
+
+            .replaceAll(
+
+                "'",
+
+                "&#039;"
+
+            );
+
+    }
+
+
+
+    /*
+       LOAD DASHBOARD
+       WHEN PAGE OPENS
+    */
+
+    loadDashboard();
+
+
+
+    /*
+       AUTOMATICALLY REFRESH
+       EVERY 30 SECONDS.
+
+       THIS UPDATES:
+
+       ACTIVE TRIP
+
+       ROUTE
+
+       LOCATION NAME
+
+       GPS UPDATE TIME
+    */
+
+    setInterval(
+
+        loadDashboard,
+
+        30000
+
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

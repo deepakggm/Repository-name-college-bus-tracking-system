@@ -1,0 +1,3567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        College Bus Live Tracking
+    </title>
+
+
+    <!-- LEAFLET CSS -->
+
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                    Arial,
+                    sans-serif;
+
+            color: #263238;
+
+            background-color: #f3f6fa;
+
+        }
+
+
+        /* HEADER */
+
+        .header {
+
+            padding: 18px 25px;
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #123458,
+                            #1e6fa8
+                    );
+
+            box-shadow:
+                    0 3px 12px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.18
+                    );
+
+        }
+
+
+        .title-container {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+        }
+
+
+        .header-icon {
+
+            font-size: 42px;
+
+        }
+
+
+        .header h1 {
+
+            margin: 0;
+
+            font-size: 25px;
+
+        }
+
+
+        .header p {
+
+            margin: 5px 0 0;
+
+            color: #d8eaf8;
+
+        }
+
+
+        .back-button {
+
+            padding: 11px 16px;
+
+            color: white;
+
+            background-color: #198754;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+        }
+
+
+        /* MAIN */
+
+        .main-container {
+
+            width: 95%;
+
+            max-width: 1250px;
+
+            margin: 22px auto;
+
+        }
+
+
+        /* INFORMATION */
+
+        .bus-information {
+
+            padding: 23px;
+
+            background-color: white;
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 4px 15px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.11
+                    );
+
+        }
+
+
+        /* BUS SELECTION */
+
+        .bus-selection {
+
+            display: flex;
+
+            justify-content:
+                    center;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        label {
+
+            font-weight: bold;
+
+        }
+
+
+        input {
+
+            width: 100px;
+
+            padding: 11px;
+
+            font-size: 17px;
+
+            text-align: center;
+
+            border:
+                    1px solid
+                    #aeb8bf;
+
+            border-radius: 8px;
+
+        }
+
+
+        button {
+
+            padding: 11px 18px;
+
+            color: white;
+
+            background-color: #198754;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+
+        button:hover {
+
+            opacity: 0.88;
+
+        }
+
+
+        /* STATUS */
+
+        .status-container {
+
+            display: grid;
+
+            grid-template-columns:
+
+                    repeat(
+
+                            auto-fit,
+
+                            minmax(
+                                    230px,
+                                    1fr
+                            )
+
+                    );
+
+            gap: 16px;
+
+        }
+
+
+        .status-card {
+
+            padding: 18px;
+
+            background-color: #eef4fa;
+
+            border-radius: 11px;
+
+        }
+
+
+        .status-card h3 {
+
+            margin-top: 0;
+
+            color: #1e3a5f;
+
+        }
+
+
+        .status-card p {
+
+            margin: 9px 0;
+
+            line-height: 1.5;
+
+        }
+
+
+        #tripStatus,
+        #connectionStatus,
+        #busStatus {
+
+            font-weight: bold;
+
+        }
+
+
+        #locationName {
+
+            color: #198754;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* LIVE DATA WARNING */
+
+        .fresh {
+
+            color: #198754;
+
+            font-weight: bold;
+
+        }
+
+
+        .old {
+
+            color: #dc3545;
+
+            font-weight: bold;
+
+        }
+
+
+        /* MAP HEADER */
+
+        .map-header {
+
+            margin-top: 22px;
+
+            padding: 15px 18px;
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+
+            background-color: white;
+
+            border-radius:
+                    12px 12px 0 0;
+
+        }
+
+
+        .map-header h2 {
+
+            margin: 0;
+
+            color: #1e3a5f;
+
+        }
+
+
+        .google-button {
+
+            display: none;
+
+            padding: 10px 15px;
+
+            color: white;
+
+            background-color: #0d6efd;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+        }
+
+
+        /* MAP */
+
+        #map {
+
+            width: 100%;
+
+            height: 65vh;
+
+            min-height: 450px;
+
+            border-radius:
+                    0 0 15px 15px;
+
+            box-shadow:
+                    0 5px 18px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.18
+                    );
+
+        }
+
+
+        /* 3D-LIKE BUS MARKER */
+
+        .bus-marker {
+
+            width: 58px;
+
+            height: 58px;
+
+            display: flex;
+
+            justify-content:
+                    center;
+
+            align-items: center;
+
+            font-size: 42px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #ffffff,
+                            #d9e4ed
+                    );
+
+            border:
+                    3px solid
+                    #0d6efd;
+
+            border-radius: 50%;
+
+            box-shadow:
+
+                    0 9px 10px
+
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.35
+                    ),
+
+                    inset 0 3px 4px
+
+                    rgba(
+                            255,
+                            255,
+                            255,
+                            0.8
+                    );
+
+            transform:
+                    perspective(
+                            150px
+                    )
+                    rotateX(
+                            12deg
+                    );
+
+        }
+
+
+        .live-dot {
+
+            position: absolute;
+
+            width: 13px;
+
+            height: 13px;
+
+            top: 0;
+
+            right: 0;
+
+            background-color: #20c997;
+
+            border:
+                    2px solid
+                    white;
+
+            border-radius: 50%;
+
+            animation:
+                    livePulse
+                    1.5s
+                    infinite;
+
+        }
+
+
+        @keyframes livePulse {
+
+            0% {
+
+                box-shadow:
+
+                        0 0 0 0
+
+                        rgba(
+                                32,
+                                201,
+                                151,
+                                0.8
+                        );
+
+            }
+
+
+            100% {
+
+                box-shadow:
+
+                        0 0 0 14px
+
+                        rgba(
+                                32,
+                                201,
+                                151,
+                                0
+                        );
+
+            }
+
+        }
+
+
+        /* MOBILE */
+
+        @media (
+                max-width: 650px
+        ) {
+
+
+            .header {
+
+                padding: 15px;
+
+            }
+
+
+            .header h1 {
+
+                font-size: 21px;
+
+            }
+
+
+            .back-button {
+
+                width: 100%;
+
+                text-align: center;
+
+            }
+
+
+            #map {
+
+                height: 58vh;
+
+                min-height: 390px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header class="header">
+
+
+    <div class="title-container">
+
+
+        <div class="header-icon">
+
+            🚌
+
+        </div>
+
+
+        <div>
+
+
+            <h1>
+
+                College Bus Live Tracking
+
+            </h1>
+
+
+            <p>
+
+                Real GPS location from the
+                bus coordinator's phone
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+    <a
+
+            href="/student-dashboard.html"
+
+            class="back-button"
+
+    >
+
+        ⬅ Student Dashboard
+
+    </a>
+
+
+</header>
+
+
+
+<main class="main-container">
+
+
+    <!-- BUS INFORMATION -->
+
+    <section class="bus-information">
+
+
+        <!-- SELECT BUS -->
+
+        <div class="bus-selection">
+
+
+            <label for="busId">
+
+                Selected Bus ID:
+
+            </label>
+
+
+            <input
+
+                    type="number"
+
+                    id="busId"
+
+                    min="1"
+
+                    placeholder="Bus ID"
+
+            >
+
+
+            <button
+
+                    type="button"
+
+                    onclick="trackBus()"
+
+            >
+
+                🔍 Track Bus
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- STATUS CARDS -->
+
+        <div class="status-container">
+
+
+            <!-- BUS INFORMATION -->
+
+            <div class="status-card">
+
+
+                <h3>
+
+                    🚌 Bus Information
+
+                </h3>
+
+
+                <p>
+
+                    <strong>
+
+                        Bus name:
+
+                    </strong>
+
+
+                    <span id="busName">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Bus number:
+
+                    </strong>
+
+
+                    <span id="busNumber">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Bus status:
+
+                    </strong>
+
+
+                    <span id="registeredBusStatus">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+            </div>
+
+
+
+            <!-- TRIP -->
+
+            <div class="status-card">
+
+
+                <h3>
+
+                    🛣️ Trip Information
+
+                </h3>
+
+
+                <p id="tripStatus">
+
+                    ⚪ Checking trip...
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Trip ID:
+
+                    </strong>
+
+
+                    <span id="tripId">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Route ID:
+
+                    </strong>
+
+
+                    <span id="routeId">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Started:
+
+                    </strong>
+
+
+                    <span id="startTime">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+            </div>
+
+
+
+            <!-- CONNECTION -->
+
+            <div class="status-card">
+
+
+                <h3>
+
+                    📡 Live Connection
+
+                </h3>
+
+
+                <p id="connectionStatus">
+
+                    ⚪ Not connected
+
+                </p>
+
+
+                <p id="busStatus">
+
+                    ⚪ Waiting for GPS...
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Data condition:
+
+                    </strong>
+
+
+                    <span id="dataCondition">
+
+                        Waiting...
+
+                    </span>
+
+                </p>
+
+
+            </div>
+
+
+
+            <!-- LOCATION -->
+
+            <div class="status-card">
+
+
+                <h3>
+
+                    📍 Current Location
+
+                </h3>
+
+
+                <p id="locationName">
+
+                    Waiting for real GPS data...
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Latitude:
+
+                    </strong>
+
+
+                    <span id="latitude">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Longitude:
+
+                    </strong>
+
+
+                    <span id="longitude">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        GPS accuracy:
+
+                    </strong>
+
+
+                    <span id="accuracy">
+
+                        Not provided
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+
+                        Last updated:
+
+                    </strong>
+
+
+                    <span id="updatedAt">
+
+                        --
+
+                    </span>
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- MAP TITLE -->
+
+    <section class="map-header">
+
+
+        <h2>
+
+            🗺️ Live Bus Map
+
+        </h2>
+
+
+        <a
+
+                id="googleMapsButton"
+
+                class="google-button"
+
+                href="#"
+
+                target="_blank"
+
+                rel="noopener noreferrer"
+
+        >
+
+            📍 Open Exact Point in Google Maps
+
+        </a>
+
+
+    </section>
+
+
+
+    <!-- MAP -->
+
+    <div id="map"></div>
+
+
+</main>
+
+
+
+<!-- LEAFLET -->
+
+<script
+
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+
+</script>
+
+
+
+<!-- SOCKJS -->
+
+<script
+
+        src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js">
+
+</script>
+
+
+
+<!-- STOMP -->
+
+<script
+
+        src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js">
+
+</script>
+
+
+
+<script>
+
+
+    /*
+       CREATE MAP
+
+       THIS DEFAULT VIEW IS ONLY
+       THE INITIAL MAP VIEW.
+
+       NO BUS MARKER IS DISPLAYED
+       UNTIL REAL GPS DATA ARRIVES.
+    */
+
+    const map =
+
+        L.map(
+
+            "map",
+
+            {
+
+                zoomControl:
+
+                    true
+
+            }
+
+        )
+
+            .setView(
+
+                [
+
+                    11.1271,
+
+                    78.6569
+
+                ],
+
+                8
+
+            );
+
+
+
+    /*
+       STREET MAP
+    */
+
+    const streetMap =
+
+        L.tileLayer(
+
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+            {
+
+                maxZoom:
+
+                    19,
+
+                attribution:
+
+                    "&copy; OpenStreetMap contributors"
+
+            }
+
+        );
+
+
+
+    /*
+       SATELLITE MAP
+
+       ESRI SATELLITE IMAGERY
+    */
+
+    const satelliteMap =
+
+        L.tileLayer(
+
+            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+
+            {
+
+                maxZoom:
+
+                    19,
+
+                attribution:
+
+                    "Satellite imagery by Esri"
+
+            }
+
+        );
+
+
+
+    /*
+       START WITH SATELLITE VIEW
+    */
+
+    satelliteMap
+
+        .addTo(
+
+            map
+
+        );
+
+
+
+    /*
+       MAP VIEW SWITCHER
+    */
+
+    L.control
+
+        .layers(
+
+            {
+
+                "🛰️ Satellite":
+
+                    satelliteMap,
+
+                "🗺️ Street Map":
+
+                    streetMap
+
+            }
+
+        )
+
+        .addTo(
+
+            map
+
+        );
+
+
+
+    /*
+       BUS ICON
+    */
+
+    const busIcon =
+
+        L.divIcon(
+
+            {
+
+                html:
+
+                    `
+
+                    <div class="bus-marker">
+
+                        🚌
+
+                        <span class="live-dot">
+
+                        </span>
+
+                    </div>
+
+                    `,
+
+                className:
+
+                    "",
+
+                iconSize:
+
+                    [
+
+                        60,
+
+                        60
+
+                    ],
+
+                iconAnchor:
+
+                    [
+
+                        30,
+
+                        30
+
+                    ]
+
+            }
+
+        );
+
+
+
+    /*
+       VARIABLES
+    */
+
+    let busMarker =
+
+        null;
+
+
+    let accuracyCircle =
+
+        null;
+
+
+    let stompClient =
+
+        null;
+
+
+    let currentSubscription =
+
+        null;
+
+
+    let selectedBusId =
+
+        null;
+
+
+    let latestLatitude =
+
+        null;
+
+
+    let latestLongitude =
+
+        null;
+
+
+
+    /*
+       READ BUS ID FROM:
+
+       student-map.html?busId=1
+    */
+
+    function loadBusIdFromUrl() {
+
+
+        const urlParameters =
+
+            new URLSearchParams(
+
+                window.location.search
+
+            );
+
+
+        const busId =
+
+            urlParameters.get(
+
+                "busId"
+
+            );
+
+
+        if (
+
+            busId
+
+            !==
+
+            null
+
+            &&
+
+            Number(
+
+                busId
+
+            )
+
+            >
+
+            0
+
+        ) {
+
+
+            document
+
+                .getElementById(
+
+                    "busId"
+
+                )
+
+                .value =
+
+                    busId;
+
+
+            trackBus();
+
+
+        }
+
+    }
+
+
+
+    /*
+       TRACK SELECTED BUS
+    */
+
+    async function trackBus() {
+
+
+        const busId =
+
+            document
+
+                .getElementById(
+
+                    "busId"
+
+                )
+
+                .value;
+
+
+
+        if (
+
+            busId
+
+            ===
+
+            ""
+
+            ||
+
+            Number(
+
+                busId
+
+            )
+
+            <=
+
+            0
+
+        ) {
+
+
+            document
+
+                .getElementById(
+
+                    "busStatus"
+
+                )
+
+                .innerText =
+
+                    "❌ Enter a valid Bus ID";
+
+
+            return;
+
+        }
+
+
+
+        selectedBusId =
+
+            String(
+
+                busId
+
+            );
+
+
+
+        /*
+           RESET OLD MAP DATA
+
+           THIS PREVENTS THE
+           PREVIOUS BUS LOCATION
+           FROM BEING SHOWN FOR
+           THE NEW BUS.
+        */
+
+        clearOldMapData();
+
+
+
+        document
+
+            .getElementById(
+
+                "busStatus"
+
+            )
+
+            .innerText =
+
+                "🟡 Loading real GPS location...";
+
+
+
+        await loadBusInformation(
+
+            busId
+
+        );
+
+
+        await checkActiveTrip(
+
+            busId
+
+        );
+
+
+        await getLatestLocation(
+
+            busId
+
+        );
+
+
+        connectWebSocket(
+
+            busId
+
+        );
+
+    }
+
+
+
+    /*
+       LOAD BUS DETAILS
+    */
+
+    async function loadBusInformation(
+
+        busId
+
+    ) {
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/buses/"
+
+                    + busId
+
+                );
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                throw new Error(
+
+                    "Bus was not found"
+
+                );
+
+            }
+
+
+            const bus =
+
+                await response.json();
+
+
+            document
+
+                .getElementById(
+
+                    "busName"
+
+                )
+
+                .innerText =
+
+                    bus.busName
+
+                    ||
+
+                    "--";
+
+
+            document
+
+                .getElementById(
+
+                    "busNumber"
+
+                )
+
+                .innerText =
+
+                    bus.busNumber
+
+                    ||
+
+                    "--";
+
+
+            document
+
+                .getElementById(
+
+                    "registeredBusStatus"
+
+                )
+
+                .innerText =
+
+                    bus.status
+
+                    ||
+
+                    "--";
+
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            document
+
+                .getElementById(
+
+                    "busName"
+
+                )
+
+                .innerText =
+
+                    "Bus not found";
+
+
+            console.error(
+
+                error
+
+            );
+
+        }
+
+    }
+
+
+
+    /*
+       ACTIVE TRIP
+    */
+
+    async function checkActiveTrip(
+
+        busId
+
+    ) {
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/trips/active/"
+
+                    + busId
+
+                );
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                showNoActiveTrip();
+
+
+                return;
+
+            }
+
+
+            const trip =
+
+                await response.json();
+
+
+            document
+
+                .getElementById(
+
+                    "tripStatus"
+
+                )
+
+                .innerText =
+
+                    "🟢 Trip is ACTIVE";
+
+
+            document
+
+                .getElementById(
+
+                    "tripStatus"
+
+                )
+
+                .style.color =
+
+                    "#198754";
+
+
+            document
+
+                .getElementById(
+
+                    "tripId"
+
+                )
+
+                .innerText =
+
+                    trip.id;
+
+
+            document
+
+                .getElementById(
+
+                    "routeId"
+
+                )
+
+                .innerText =
+
+                    trip.routeId;
+
+
+            document
+
+                .getElementById(
+
+                    "startTime"
+
+                )
+
+                .innerText =
+
+                    formatDate(
+
+                        trip.startTime
+
+                    );
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            showNoActiveTrip();
+
+        }
+
+    }
+
+
+
+    /*
+       NO ACTIVE TRIP
+    */
+
+    function showNoActiveTrip() {
+
+
+        document
+
+            .getElementById(
+
+                "tripStatus"
+
+            )
+
+            .innerText =
+
+                "⚪ No active trip";
+
+
+        document
+
+            .getElementById(
+
+                "tripStatus"
+
+            )
+
+            .style.color =
+
+                "#666666";
+
+
+        document
+
+            .getElementById(
+
+                "tripId"
+
+            )
+
+            .innerText =
+
+                "--";
+
+
+        document
+
+            .getElementById(
+
+                "routeId"
+
+            )
+
+            .innerText =
+
+                "--";
+
+
+        document
+
+            .getElementById(
+
+                "startTime"
+
+            )
+
+            .innerText =
+
+                "--";
+
+    }
+
+
+
+    /*
+       GET LATEST REAL
+       GPS LOCATION
+    */
+
+    async function getLatestLocation(
+
+        busId
+
+    ) {
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/locations/bus/"
+
+                    + busId
+
+                );
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                throw new Error(
+
+                    "No real GPS location has been received"
+
+                );
+
+            }
+
+
+            const location =
+
+                await response.json();
+
+
+            /*
+               VERIFY THE LOCATION
+               BELONGS TO THE
+               SELECTED BUS.
+            */
+
+            if (
+
+                location.busId
+
+                !==
+
+                undefined
+
+                &&
+
+                Number(
+
+                    location.busId
+
+                )
+
+                !==
+
+                Number(
+
+                    busId
+
+                )
+
+            ) {
+
+
+                throw new Error(
+
+                    "Location does not belong to the selected bus"
+
+                );
+
+            }
+
+
+            updateBusOnMap(
+
+                location
+
+            );
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            document
+
+                .getElementById(
+
+                    "busStatus"
+
+                )
+
+                .innerText =
+
+                    "⚠️ "
+
+                    + error.message;
+
+
+            document
+
+                .getElementById(
+
+                    "busStatus"
+
+                )
+
+                .style.color =
+
+                    "#dc3545";
+
+
+            document
+
+                .getElementById(
+
+                    "locationName"
+
+                )
+
+                .innerText =
+
+                    "No GPS data is available for this bus";
+
+        }
+
+    }
+
+
+
+    /*
+       WEBSOCKET
+    */
+
+    function connectWebSocket(
+
+        busId
+
+    ) {
+
+
+        if (
+
+            stompClient
+
+            !==
+
+            null
+
+            &&
+
+            stompClient.connected
+
+        ) {
+
+
+            subscribeToBus(
+
+                busId
+
+            );
+
+
+            return;
+
+        }
+
+
+        document
+
+            .getElementById(
+
+                "connectionStatus"
+
+            )
+
+            .innerText =
+
+                "🟡 Connecting...";
+
+
+        const socket =
+
+            new SockJS(
+
+                "/ws"
+
+            );
+
+
+        stompClient =
+
+            Stomp.over(
+
+                socket
+
+            );
+
+
+        stompClient.debug =
+
+            null;
+
+
+        stompClient.connect(
+
+            {},
+
+
+            function () {
+
+
+                document
+
+                    .getElementById(
+
+                        "connectionStatus"
+
+                    )
+
+                    .innerText =
+
+                        "🟢 Connected";
+
+
+                document
+
+                    .getElementById(
+
+                        "connectionStatus"
+
+                    )
+
+                    .style.color =
+
+                        "#198754";
+
+
+                subscribeToBus(
+
+                    busId
+
+                );
+
+            },
+
+
+            function (
+
+                error
+
+            ) {
+
+
+                document
+
+                    .getElementById(
+
+                        "connectionStatus"
+
+                    )
+
+                    .innerText =
+
+                        "🔴 Connection failed";
+
+
+                document
+
+                    .getElementById(
+
+                        "connectionStatus"
+
+                    )
+
+                    .style.color =
+
+                        "#dc3545";
+
+
+                console.error(
+
+                    error
+
+                );
+
+            }
+
+        );
+
+    }
+
+
+
+    /*
+       SUBSCRIBE ONLY TO
+       SELECTED BUS
+    */
+
+    function subscribeToBus(
+
+        busId
+
+    ) {
+
+
+        if (
+
+            currentSubscription
+
+            !==
+
+            null
+
+        ) {
+
+
+            currentSubscription
+
+                .unsubscribe();
+
+        }
+
+
+        currentSubscription =
+
+            stompClient
+
+                .subscribe(
+
+                    "/topic/bus/"
+
+                    + busId,
+
+
+                    function (
+
+                        message
+
+                    ) {
+
+
+                        try {
+
+
+                            const location =
+
+                                JSON.parse(
+
+                                    message.body
+
+                                );
+
+
+                            /*
+                               IGNORE LOCATION
+                               FROM ANOTHER BUS.
+                            */
+
+                            if (
+
+                                location.busId
+
+                                !==
+
+                                undefined
+
+                                &&
+
+                                Number(
+
+                                    location.busId
+
+                                )
+
+                                !==
+
+                                Number(
+
+                                    selectedBusId
+
+                                )
+
+                            ) {
+
+
+                                return;
+
+                            }
+
+
+                            updateBusOnMap(
+
+                                location
+
+                            );
+
+
+                        }
+
+
+                        catch (
+
+                            error
+
+                        ) {
+
+
+                            console.error(
+
+                                "Invalid WebSocket location:",
+
+                                error
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+
+        document
+
+            .getElementById(
+
+                "busStatus"
+
+            )
+
+            .innerText =
+
+                "🟢 Waiting for new GPS updates";
+
+    }
+
+
+
+    /*
+       UPDATE REAL BUS
+       LOCATION ON MAP
+    */
+
+    function updateBusOnMap(
+
+        location
+
+    ) {
+
+
+        const latitude =
+
+            Number(
+
+                location.latitude
+
+            );
+
+
+        const longitude =
+
+            Number(
+
+                location.longitude
+
+            );
+
+
+
+        /*
+           REJECT INVALID
+           COORDINATES.
+        */
+
+        if (
+
+            !Number.isFinite(
+
+                latitude
+
+            )
+
+            ||
+
+            !Number.isFinite(
+
+                longitude
+
+            )
+
+            ||
+
+            latitude
+
+            <
+
+            -90
+
+            ||
+
+            latitude
+
+            >
+
+            90
+
+            ||
+
+            longitude
+
+            <
+
+            -180
+
+            ||
+
+            longitude
+
+            >
+
+            180
+
+        ) {
+
+
+            console.error(
+
+                "Invalid GPS coordinates:",
+
+                location
+
+            );
+
+
+            return;
+
+        }
+
+
+
+        latestLatitude =
+
+            latitude;
+
+
+        latestLongitude =
+
+            longitude;
+
+
+
+        /*
+           CREATE BUS MARKER
+           ONLY AFTER REAL
+           GPS DATA ARRIVES.
+        */
+
+        if (
+
+            busMarker
+
+            ===
+
+            null
+
+        ) {
+
+
+            busMarker =
+
+                L.marker(
+
+                    [
+
+                        latitude,
+
+                        longitude
+
+                    ],
+
+                    {
+
+                        icon:
+
+                            busIcon
+
+                    }
+
+                )
+
+                    .addTo(
+
+                        map
+
+                    );
+
+        }
+
+
+        else {
+
+
+            /*
+               SMOOTH MOVEMENT
+            */
+
+            moveMarkerSmoothly(
+
+                busMarker,
+
+                latitude,
+
+                longitude
+
+            );
+
+        }
+
+
+
+        /*
+           GPS ACCURACY CIRCLE
+
+           IT IS DISPLAYED ONLY
+           WHEN THE BACKEND SENDS
+           AN ACCURACY VALUE.
+        */
+
+        const accuracy =
+
+            Number(
+
+                location.accuracy
+
+            );
+
+
+        if (
+
+            Number.isFinite(
+
+                accuracy
+
+            )
+
+            &&
+
+            accuracy
+
+            >
+
+            0
+
+        ) {
+
+
+            if (
+
+                accuracyCircle
+
+                ===
+
+                null
+
+            ) {
+
+
+                accuracyCircle =
+
+                    L.circle(
+
+                        [
+
+                            latitude,
+
+                            longitude
+
+                        ],
+
+                        {
+
+                            radius:
+
+                                accuracy
+
+                        }
+
+                    )
+
+                        .addTo(
+
+                            map
+
+                        );
+
+            }
+
+
+            else {
+
+
+                accuracyCircle
+
+                    .setLatLng(
+
+                        [
+
+                            latitude,
+
+                            longitude
+
+                        ]
+
+                    );
+
+
+                accuracyCircle
+
+                    .setRadius(
+
+                        accuracy
+
+                    );
+
+            }
+
+
+            document
+
+                .getElementById(
+
+                    "accuracy"
+
+                )
+
+                .innerText =
+
+                    Math.round(
+
+                        accuracy
+
+                    )
+
+                    +
+
+                    " metres";
+
+        }
+
+
+        else {
+
+
+            document
+
+                .getElementById(
+
+                    "accuracy"
+
+                )
+
+                .innerText =
+
+                    "Not provided";
+
+        }
+
+
+
+        /*
+           LOCATION NAME
+        */
+
+        const locationName =
+
+            location.locationName
+
+            &&
+
+            location.locationName
+
+            !==
+
+            "Location detecting..."
+
+
+                ?
+
+
+                location.locationName
+
+
+                :
+
+
+                "GPS coordinates received; location name is loading";
+
+
+
+        busMarker
+
+            .bindPopup(
+
+                "<b>🚌 College Bus</b>"
+
+                +
+
+                "<br><br>"
+
+                +
+
+                "<b>Current location:</b>"
+
+                +
+
+                "<br>"
+
+                +
+
+                escapeHtml(
+
+                    locationName
+
+                )
+
+                +
+
+                "<br><br>"
+
+                +
+
+                "<b>Latitude:</b> "
+
+                +
+
+                latitude.toFixed(
+
+                    6
+
+                )
+
+                +
+
+                "<br>"
+
+                +
+
+                "<b>Longitude:</b> "
+
+                +
+
+                longitude.toFixed(
+
+                    6
+
+                )
+
+            );
+
+
+
+        /*
+           CENTER MAP ON
+           REAL LOCATION
+        */
+
+        map
+
+            .flyTo(
+
+                [
+
+                    latitude,
+
+                    longitude
+
+                ],
+
+                18,
+
+                {
+
+                    animate:
+
+                        true,
+
+                    duration:
+
+                        1.5
+
+                }
+
+            );
+
+
+
+        document
+
+            .getElementById(
+
+                "locationName"
+
+            )
+
+            .innerText =
+
+                locationName;
+
+
+
+        document
+
+            .getElementById(
+
+                "latitude"
+
+            )
+
+            .innerText =
+
+                latitude.toFixed(
+
+                    6
+
+                );
+
+
+
+        document
+
+            .getElementById(
+
+                "longitude"
+
+            )
+
+            .innerText =
+
+                longitude.toFixed(
+
+                    6
+
+                );
+
+
+
+        document
+
+            .getElementById(
+
+                "updatedAt"
+
+            )
+
+            .innerText =
+
+                formatDate(
+
+                    location.updatedAt
+
+                );
+
+
+
+        document
+
+            .getElementById(
+
+                "busStatus"
+
+            )
+
+            .innerText =
+
+                "🟢 Real GPS location received";
+
+
+        document
+
+            .getElementById(
+
+                "busStatus"
+
+            )
+
+            .style.color =
+
+                "#198754";
+
+
+
+        /*
+           CHECK WHETHER DATA
+           IS CURRENT OR OLD.
+        */
+
+        checkDataFreshness(
+
+            location.updatedAt
+
+        );
+
+
+
+        /*
+           GOOGLE MAPS LINK
+
+           OPENS THE SAME REAL
+           LATITUDE AND LONGITUDE.
+        */
+
+        const googleButton =
+
+            document
+
+                .getElementById(
+
+                    "googleMapsButton"
+
+                );
+
+
+        googleButton.href =
+
+            "https://www.google.com/maps/search/?api=1&query="
+
+            +
+
+            encodeURIComponent(
+
+                latitude
+
+                +
+
+                ","
+
+                +
+
+                longitude
+
+            );
+
+
+        googleButton.style.display =
+
+            "inline-block";
+
+    }
+
+
+
+    /*
+       SMOOTH MARKER MOVEMENT
+    */
+
+    function moveMarkerSmoothly(
+
+        marker,
+
+        newLatitude,
+
+        newLongitude
+
+    ) {
+
+
+        const oldPosition =
+
+            marker.getLatLng();
+
+
+        const steps =
+
+            25;
+
+
+        let currentStep =
+
+            0;
+
+
+        const latitudeDifference =
+
+            (
+
+                newLatitude
+
+                -
+
+                oldPosition.lat
+
+            )
+
+            /
+
+            steps;
+
+
+        const longitudeDifference =
+
+            (
+
+                newLongitude
+
+                -
+
+                oldPosition.lng
+
+            )
+
+            /
+
+            steps;
+
+
+        const movement =
+
+            setInterval(
+
+                function () {
+
+
+                    currentStep++;
+
+
+                    marker
+
+                        .setLatLng(
+
+                            [
+
+                                oldPosition.lat
+
+                                +
+
+                                latitudeDifference
+
+                                *
+
+                                currentStep,
+
+
+                                oldPosition.lng
+
+                                +
+
+                                longitudeDifference
+
+                                *
+
+                                currentStep
+
+                            ]
+
+                        );
+
+
+                    if (
+
+                        currentStep
+
+                        >=
+
+                        steps
+
+                    ) {
+
+
+                        clearInterval(
+
+                            movement
+
+                        );
+
+                    }
+
+                },
+
+                35
+
+            );
+
+    }
+
+
+
+    /*
+       CHECK LOCATION AGE
+    */
+
+    function checkDataFreshness(
+
+        updatedAt
+
+    ) {
+
+
+        const element =
+
+            document
+
+                .getElementById(
+
+                    "dataCondition"
+
+                );
+
+
+        if (
+
+            !updatedAt
+
+        ) {
+
+
+            element.innerText =
+
+                "Time was not provided";
+
+
+            element.className =
+
+                "old";
+
+
+            return;
+
+        }
+
+
+        const updateTime =
+
+            new Date(
+
+                updatedAt
+
+            )
+
+                .getTime();
+
+
+        const currentTime =
+
+            new Date()
+
+                .getTime();
+
+
+        const ageInMinutes =
+
+            (
+
+                currentTime
+
+                -
+
+                updateTime
+
+            )
+
+            /
+
+            60000;
+
+
+        if (
+
+            ageInMinutes
+
+            <=
+
+            6
+
+        ) {
+
+
+            element.innerText =
+
+                "🟢 LIVE — recently updated";
+
+
+            element.className =
+
+                "fresh";
+
+        }
+
+
+        else {
+
+
+            element.innerText =
+
+                "⚠️ OLD DATA — last update was "
+
+                +
+
+                Math.floor(
+
+                    ageInMinutes
+
+                )
+
+                +
+
+                " minutes ago";
+
+
+            element.className =
+
+                "old";
+
+        }
+
+    }
+
+
+
+    /*
+       REMOVE PREVIOUS BUS
+       DATA FROM MAP
+    */
+
+    function clearOldMapData() {
+
+
+        if (
+
+            busMarker
+
+            !==
+
+            null
+
+        ) {
+
+
+            map.removeLayer(
+
+                busMarker
+
+            );
+
+
+            busMarker =
+
+                null;
+
+        }
+
+
+        if (
+
+            accuracyCircle
+
+            !==
+
+            null
+
+        ) {
+
+
+            map.removeLayer(
+
+                accuracyCircle
+
+            );
+
+
+            accuracyCircle =
+
+                null;
+
+        }
+
+
+        document
+
+            .getElementById(
+
+                "locationName"
+
+            )
+
+            .innerText =
+
+                "Waiting for real GPS data...";
+
+
+        document
+
+            .getElementById(
+
+                "latitude"
+
+            )
+
+            .innerText =
+
+                "--";
+
+
+        document
+
+            .getElementById(
+
+                "longitude"
+
+            )
+
+            .innerText =
+
+                "--";
+
+
+        document
+
+            .getElementById(
+
+                "updatedAt"
+
+            )
+
+            .innerText =
+
+                "--";
+
+
+        document
+
+            .getElementById(
+
+                "accuracy"
+
+            )
+
+            .innerText =
+
+                "Not provided";
+
+
+        document
+
+            .getElementById(
+
+                "dataCondition"
+
+            )
+
+            .innerText =
+
+                "Waiting...";
+
+
+        document
+
+            .getElementById(
+
+                "googleMapsButton"
+
+            )
+
+            .style.display =
+
+                "none";
+
+    }
+
+
+
+    /*
+       DATE FORMAT
+    */
+
+    function formatDate(
+
+        value
+
+    ) {
+
+
+        if (
+
+            !value
+
+        ) {
+
+
+            return "--";
+
+        }
+
+
+        const date =
+
+            new Date(
+
+                value
+
+            );
+
+
+        if (
+
+            isNaN(
+
+                date.getTime()
+
+            )
+
+        ) {
+
+
+            return value;
+
+        }
+
+
+        return date
+
+            .toLocaleString(
+
+                "en-IN"
+
+            );
+
+    }
+
+
+
+    /*
+       SAFE HTML
+    */
+
+    function escapeHtml(
+
+        value
+
+    ) {
+
+
+        return String(
+
+            value
+
+            ||
+
+            ""
+
+        )
+
+            .replaceAll(
+
+                "&",
+
+                "&amp;"
+
+            )
+
+            .replaceAll(
+
+                "<",
+
+                "&lt;"
+
+            )
+
+            .replaceAll(
+
+                ">",
+
+                "&gt;"
+
+            )
+
+            .replaceAll(
+
+                "\"",
+
+                "&quot;"
+
+            )
+
+            .replaceAll(
+
+                "'",
+
+                "&#039;"
+
+            );
+
+    }
+
+
+
+    /*
+       CHECK TRIP EVERY
+       15 SECONDS
+    */
+
+    setInterval(
+
+        function () {
+
+
+            if (
+
+                selectedBusId
+
+                !==
+
+                null
+
+            ) {
+
+
+                checkActiveTrip(
+
+                    selectedBusId
+
+                );
+
+            }
+
+        },
+
+        15000
+
+    );
+
+
+
+    /*
+       DISCONNECT WHEN
+       PAGE CLOSES
+    */
+
+    window
+
+        .addEventListener(
+
+            "beforeunload",
+
+
+            function () {
+
+
+                if (
+
+                    stompClient
+
+                    !==
+
+                    null
+
+                    &&
+
+                    stompClient.connected
+
+                ) {
+
+
+                    stompClient
+
+                        .disconnect();
+
+                }
+
+            }
+
+        );
+
+
+
+    /*
+       AUTOMATICALLY TRACK
+       THE BUS SELECTED ON
+       STUDENT DASHBOARD.
+    */
+
+    loadBusIdFromUrl();
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Bus Trip Tracker</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            text-align: center;
+        }
+
+        .header {
+            padding: 20px;
+            color: white;
+            background-color: #1e3a5f;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+        }
+
+        .tracker-container {
+            width: 92%;
+            max-width: 600px;
+            margin: 25px auto;
+            padding: 25px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow:
+                    0 4px 15px
+                    rgba(0, 0, 0, 0.12);
+        }
+
+        .input-group {
+            margin: 15px;
+        }
+
+        label {
+            display: inline-block;
+            width: 90px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 120px;
+            padding: 10px;
+            font-size: 16px;
+            text-align: center;
+            border: 1px solid #aaaaaa;
+            border-radius: 7px;
+        }
+
+        button {
+            margin: 8px;
+            padding: 13px 18px;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.88;
+        }
+
+        .start-button {
+            background-color: #198754;
+        }
+
+        .stop-button {
+            background-color: #dc3545;
+        }
+
+        .check-button {
+            background-color: #0d6efd;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        #tripStatus {
+            margin-top: 20px;
+            padding: 13px;
+            border-radius: 8px;
+            background-color: #eef4fa;
+        }
+
+        #gpsStatus {
+            color: #1e3a5f;
+        }
+
+        .location-details {
+            margin-top: 20px;
+            padding: 20px;
+            text-align: left;
+            background-color: #eef4fa;
+            border-radius: 10px;
+        }
+
+        .location-details p {
+            line-height: 1.5;
+        }
+
+        #locationName {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        #accuracyMessage {
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>
+        🚌 Bus Trip and GPS Tracker
+    </h1>
+
+    <p>
+        Start the trip and share the live bus location
+    </p>
+
+</div>
+
+
+<div class="tracker-container">
+
+
+    <div class="input-group">
+
+        <label for="busId">
+
+            Bus ID:
+
+        </label>
+
+        <input
+                type="number"
+                id="busId"
+                value="1"
+                min="1"
+        >
+
+    </div>
+
+
+    <div class="input-group">
+
+        <label for="routeId">
+
+            Route ID:
+
+        </label>
+
+        <input
+                type="number"
+                id="routeId"
+                value="1"
+                min="1"
+        >
+
+    </div>
+
+
+    <button
+            id="startButton"
+            class="start-button"
+            onclick="startTrip()"
+    >
+
+        ▶ Start Trip
+
+    </button>
+
+
+    <button
+            id="stopButton"
+            class="stop-button"
+            onclick="stopTrip()"
+            disabled
+    >
+
+        ⏹ Stop Trip
+
+    </button>
+
+
+    <button
+            class="check-button"
+            onclick="checkTripStatus()"
+    >
+
+        🔄 Check Status
+
+    </button>
+
+
+    <h2 id="tripStatus">
+
+        Trip not started
+
+    </h2>
+
+
+    <h3 id="gpsStatus">
+
+        GPS tracking is not running
+
+    </h3>
+
+
+    <div class="location-details">
+
+
+        <p>
+
+            <strong>
+                📍 Current location:
+            </strong>
+
+            <br>
+
+            <span id="locationName">
+
+                Waiting for trip...
+
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Latitude:
+            </strong>
+
+            <span id="latitude">
+
+                --
+
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Longitude:
+            </strong>
+
+            <span id="longitude">
+
+                --
+
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                GPS accuracy:
+            </strong>
+
+            <span id="accuracy">
+
+                --
+
+            </span>
+
+            metres
+
+        </p>
+
+
+        <p id="accuracyMessage">
+
+            GPS accuracy has not been checked.
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Last location sent:
+            </strong>
+
+            <span id="lastSent">
+
+                --
+
+            </span>
+
+        </p>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    let watchId = null;
+
+    let sendingLocation = false;
+
+    let tripIsActive = false;
+
+
+
+    /*
+       START TRIP
+    */
+
+    async function startTrip() {
+
+
+        const busId =
+
+            document.getElementById(
+
+                "busId"
+
+            ).value;
+
+
+        const routeId =
+
+            document.getElementById(
+
+                "routeId"
+
+            ).value;
+
+
+
+        if (
+
+            busId === ""
+
+            ||
+
+            routeId === ""
+
+            ||
+
+            Number(busId) <= 0
+
+            ||
+
+            Number(routeId) <= 0
+
+        ) {
+
+
+            showTripMessage(
+
+                "❌ Enter valid Bus ID and Route ID",
+
+                "#dc3545"
+
+            );
+
+
+            return;
+
+        }
+
+
+
+        showTripMessage(
+
+            "Starting trip...",
+
+            "#1e3a5f"
+
+        );
+
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "/api/trips/start"
+
+                    + "?busId="
+
+                    + busId
+
+                    + "&routeId="
+
+                    + routeId,
+
+
+                    {
+
+                        method:
+
+                            "POST"
+
+                    }
+
+
+                );
+
+
+
+            if (!response.ok) {
+
+
+                const errorMessage =
+
+                    await response.text();
+
+
+                throw new Error(
+
+                    errorMessage
+
+                    ||
+
+                    "Unable to start the trip"
+
+                );
+
+            }
+
+
+
+            const trip =
+
+                await response.json();
+
+
+
+            tripIsActive = true;
+
+
+
+            showTripMessage(
+
+
+                "🟢 Trip is ACTIVE"
+
+                + " | Trip ID: "
+
+                + trip.id,
+
+
+                "#198754"
+
+            );
+
+
+
+            updateButtons(
+
+                true
+
+            );
+
+
+
+            // Automatically start GPS
+
+            startGpsTracking();
+
+
+        }
+
+
+        catch (error) {
+
+
+            showTripMessage(
+
+
+                "❌ Could not start trip",
+
+
+                "#dc3545"
+
+            );
+
+
+            console.error(
+
+                error
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       STOP TRIP
+    */
+
+    async function stopTrip() {
+
+
+        const busId =
+
+            document.getElementById(
+
+                "busId"
+
+            ).value;
+
+
+
+        showTripMessage(
+
+            "Stopping trip...",
+
+            "#1e3a5f"
+
+        );
+
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "/api/trips/stop/"
+
+                    + busId,
+
+
+                    {
+
+                        method:
+
+                            "PUT"
+
+                    }
+
+
+                );
+
+
+
+            if (!response.ok) {
+
+
+                throw new Error(
+
+                    "Unable to stop the trip"
+
+                );
+
+            }
+
+
+
+            const trip =
+
+                await response.json();
+
+
+
+            tripIsActive = false;
+
+
+
+            // Stop phone GPS
+
+            stopGpsTracking();
+
+
+
+            showTripMessage(
+
+
+                "✅ Trip COMPLETED"
+
+                + " | Trip ID: "
+
+                + trip.id,
+
+
+                "#0d6efd"
+
+            );
+
+
+
+            updateButtons(
+
+                false
+
+            );
+
+
+        }
+
+
+        catch (error) {
+
+
+            showTripMessage(
+
+
+                "❌ Could not stop trip",
+
+
+                "#dc3545"
+
+            );
+
+
+            console.error(
+
+                error
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       CHECK ACTIVE TRIP
+    */
+
+    async function checkTripStatus() {
+
+
+        const busId =
+
+            document.getElementById(
+
+                "busId"
+
+            ).value;
+
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "/api/trips/active/"
+
+                    + busId
+
+
+                );
+
+
+
+            if (!response.ok) {
+
+
+                tripIsActive = false;
+
+
+                updateButtons(
+
+                    false
+
+                );
+
+
+                showTripMessage(
+
+
+                    "⚪ No active trip",
+
+
+                    "#666666"
+
+                );
+
+
+                return;
+
+            }
+
+
+
+            const trip =
+
+                await response.json();
+
+
+
+            tripIsActive = true;
+
+
+
+            updateButtons(
+
+                true
+
+            );
+
+
+
+            showTripMessage(
+
+
+                "🟢 Trip is ACTIVE"
+
+                + " | Trip ID: "
+
+                + trip.id,
+
+
+                "#198754"
+
+            );
+
+
+        }
+
+
+        catch (error) {
+
+
+            showTripMessage(
+
+
+                "❌ Unable to check trip status",
+
+
+                "#dc3545"
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       START PHONE GPS
+    */
+
+    function startGpsTracking() {
+
+
+        if (!navigator.geolocation) {
+
+
+            document.getElementById(
+
+                "gpsStatus"
+
+            ).innerText =
+
+                "❌ GPS is not supported";
+
+
+            return;
+
+        }
+
+
+
+        if (watchId !== null) {
+
+
+            return;
+
+        }
+
+
+
+        document.getElementById(
+
+            "gpsStatus"
+
+        ).innerText =
+
+            "🛰️ Searching for an accurate GPS location...";
+
+
+
+        watchId =
+
+            navigator.geolocation
+
+                .watchPosition(
+
+
+                    processLocation,
+
+
+                    showGpsError,
+
+
+                    {
+
+                        enableHighAccuracy:
+
+                            true,
+
+
+                        timeout:
+
+                            30000,
+
+
+                        maximumAge:
+
+                            0
+
+                    }
+
+
+                );
+
+
+    }
+
+
+
+    /*
+       RECEIVE GPS LOCATION
+    */
+
+    async function processLocation(
+
+        position
+
+    ) {
+
+
+        // Do not send GPS
+        // when the trip is stopped
+
+        if (!tripIsActive) {
+
+
+            return;
+
+        }
+
+
+
+        const latitude =
+
+            position.coords.latitude;
+
+
+        const longitude =
+
+            position.coords.longitude;
+
+
+        const accuracy =
+
+            position.coords.accuracy;
+
+
+
+        document.getElementById(
+
+            "latitude"
+
+        ).innerText =
+
+            latitude.toFixed(
+
+                6
+
+            );
+
+
+
+        document.getElementById(
+
+            "longitude"
+
+        ).innerText =
+
+            longitude.toFixed(
+
+                6
+
+            );
+
+
+
+        document.getElementById(
+
+            "accuracy"
+
+        ).innerText =
+
+            Math.round(
+
+                accuracy
+
+            );
+
+
+
+        // Ignore inaccurate locations
+
+        if (accuracy > 100) {
+
+
+            document.getElementById(
+
+                "gpsStatus"
+
+            ).innerText =
+
+                "🛰️ Waiting for better GPS accuracy...";
+
+
+
+            document.getElementById(
+
+                "accuracyMessage"
+
+            ).innerText =
+
+
+                "⚠️ Accuracy is "
+
+                + Math.round(
+
+                    accuracy
+
+                )
+
+                + " metres. Location was not sent.";
+
+
+
+            document.getElementById(
+
+                "accuracyMessage"
+
+            ).style.color =
+
+                "#dc3545";
+
+
+            return;
+
+        }
+
+
+
+        document.getElementById(
+
+            "accuracyMessage"
+
+        ).innerText =
+
+
+            "✅ Good GPS accuracy: "
+
+            + Math.round(
+
+                accuracy
+
+            )
+
+            + " metres";
+
+
+
+        document.getElementById(
+
+            "accuracyMessage"
+
+        ).style.color =
+
+            "#198754";
+
+
+
+        if (sendingLocation) {
+
+
+            return;
+
+        }
+
+
+
+        sendingLocation = true;
+
+
+
+        document.getElementById(
+
+            "gpsStatus"
+
+        ).innerText =
+
+            "🔍 Detecting current place...";
+
+
+
+        let locationName =
+
+            "Unknown location";
+
+
+
+        /*
+           REVERSE GEOCODING
+        */
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "https://nominatim.openstreetmap.org/reverse"
+
+                    + "?format=jsonv2"
+
+                    + "&lat="
+
+                    + latitude
+
+                    + "&lon="
+
+                    + longitude
+
+                    + "&zoom=18"
+
+                    + "&addressdetails=1"
+
+
+                );
+
+
+
+            if (response.ok) {
+
+
+                const result =
+
+                    await response.json();
+
+
+
+                const address =
+
+                    result.address
+
+                    ||
+
+                    {};
+
+
+
+                const exactArea =
+
+
+                    address.road
+
+                    ||
+
+                    address.neighbourhood
+
+                    ||
+
+                    address.hamlet
+
+                    ||
+
+                    address.suburb
+
+                    ||
+
+                    address.village
+
+                    ||
+
+                    address.town
+
+                    ||
+
+                    address.city
+
+                    ||
+
+                    "Unknown area";
+
+
+
+                const villageOrTown =
+
+
+                    address.village
+
+                    ||
+
+                    address.town
+
+                    ||
+
+                    address.city
+
+                    ||
+
+                    "";
+
+
+
+                const district =
+
+
+                    address.state_district
+
+                    ||
+
+                    address.county
+
+                    ||
+
+                    "";
+
+
+
+                const state =
+
+
+                    address.state
+
+                    ||
+
+                    "";
+
+
+
+                locationName =
+
+
+                    [
+
+                        ...new Set(
+
+                            [
+
+                                exactArea,
+
+                                villageOrTown,
+
+                                district,
+
+                                state
+
+                            ]
+
+                                .filter(
+
+                                    value =>
+
+                                        value
+
+                                )
+
+                        )
+
+                    ]
+
+                        .join(
+
+                            ", "
+
+                        );
+
+
+            }
+
+
+        }
+
+
+        catch (error) {
+
+
+            console.error(
+
+                "Location-name error:",
+
+                error
+
+            );
+
+
+        }
+
+
+
+        document.getElementById(
+
+            "locationName"
+
+        ).innerText =
+
+            locationName;
+
+
+
+        /*
+           SEND LOCATION
+           TO SPRING BOOT
+        */
+
+        const busId =
+
+            document.getElementById(
+
+                "busId"
+
+            ).value;
+
+
+
+        const locationData = {
+
+
+            busId:
+
+                Number(
+
+                    busId
+
+                ),
+
+
+            latitude:
+
+                latitude,
+
+
+            longitude:
+
+                longitude,
+
+
+            locationName:
+
+                locationName
+
+
+        };
+
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "/api/locations",
+
+
+                    {
+
+                        method:
+
+                            "POST",
+
+
+                        headers:
+
+                            {
+
+                                "Content-Type":
+
+                                    "application/json"
+
+                            },
+
+
+                        body:
+
+                            JSON.stringify(
+
+                                locationData
+
+                            )
+
+                    }
+
+
+                );
+
+
+
+            if (!response.ok) {
+
+
+                throw new Error(
+
+                    "Location was not saved"
+
+                );
+
+            }
+
+
+
+            await response.json();
+
+
+
+            document.getElementById(
+
+                "gpsStatus"
+
+            ).innerText =
+
+                "✅ Live GPS location sent";
+
+
+
+            document.getElementById(
+
+                "lastSent"
+
+            ).innerText =
+
+                new Date()
+
+                    .toLocaleTimeString();
+
+
+        }
+
+
+        catch (error) {
+
+
+            document.getElementById(
+
+                "gpsStatus"
+
+            ).innerText =
+
+                "❌ Location was not sent";
+
+
+        }
+
+
+        finally {
+
+
+            sendingLocation = false;
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       STOP PHONE GPS
+    */
+
+    function stopGpsTracking() {
+
+
+        if (watchId !== null) {
+
+
+            navigator.geolocation
+
+                .clearWatch(
+
+                    watchId
+
+                );
+
+
+            watchId = null;
+
+
+        }
+
+
+
+        sendingLocation = false;
+
+
+
+        document.getElementById(
+
+            "gpsStatus"
+
+        ).innerText =
+
+            "⏹ GPS tracking stopped";
+
+
+    }
+
+
+
+    /*
+       GPS ERROR
+    */
+
+    function showGpsError(
+
+        error
+
+    ) {
+
+
+        let message;
+
+
+
+        if (
+
+            error.code
+
+            ===
+
+            error.PERMISSION_DENIED
+
+        ) {
+
+
+            message =
+
+                "Location permission denied";
+
+
+        }
+
+
+        else if (
+
+            error.code
+
+            ===
+
+            error.POSITION_UNAVAILABLE
+
+        ) {
+
+
+            message =
+
+                "GPS location unavailable";
+
+
+        }
+
+
+        else if (
+
+            error.code
+
+            ===
+
+            error.TIMEOUT
+
+        ) {
+
+
+            message =
+
+                "GPS request timed out";
+
+
+        }
+
+
+        else {
+
+
+            message =
+
+                "Unable to get GPS location";
+
+
+        }
+
+
+
+        document.getElementById(
+
+            "gpsStatus"
+
+        ).innerText =
+
+            "❌ "
+
+            + message;
+
+
+    }
+
+
+
+    /*
+       CHANGE BUTTON STATUS
+    */
+
+    function updateButtons(
+
+        active
+
+    ) {
+
+
+        document.getElementById(
+
+            "startButton"
+
+        ).disabled =
+
+            active;
+
+
+
+        document.getElementById(
+
+            "stopButton"
+
+        ).disabled =
+
+            !active;
+
+
+
+        document.getElementById(
+
+            "busId"
+
+        ).disabled =
+
+            active;
+
+
+
+        document.getElementById(
+
+            "routeId"
+
+        ).disabled =
+
+            active;
+
+
+    }
+
+
+
+    /*
+       SHOW TRIP MESSAGE
+    */
+
+    function showTripMessage(
+
+        message,
+
+        colour
+
+    ) {
+
+
+        const status =
+
+            document.getElementById(
+
+                "tripStatus"
+
+            );
+
+
+
+        status.innerText =
+
+            message;
+
+
+
+        status.style.color =
+
+            colour;
+
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,2863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Bus Management</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                    Arial,
+                    sans-serif;
+
+            color: #263238;
+
+            background-color: #f3f6fa;
+        }
+
+
+        /*
+           NAVIGATION BAR
+        */
+
+        .navbar {
+
+            min-height: 70px;
+
+            padding: 15px 30px;
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #123458,
+                            #1e6fa8
+                    );
+
+            box-shadow:
+                    0 3px 12px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.18
+                    );
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .brand-icon {
+
+            font-size: 38px;
+        }
+
+
+        .brand h1 {
+
+            margin: 0;
+
+            font-size: 24px;
+        }
+
+
+        .brand p {
+
+            margin: 4px 0 0;
+
+            color: #d8eaf8;
+
+            font-size: 13px;
+        }
+
+
+        .navigation-buttons {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .dashboard-button {
+
+            padding: 11px 16px;
+
+            color: white;
+
+            background-color: #0d6efd;
+
+            border: none;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .logout-button {
+
+            padding: 11px 16px;
+
+            color: white;
+
+            background-color: #dc3545;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .dashboard-button:hover,
+        .logout-button:hover {
+
+            opacity: 0.87;
+        }
+
+
+        /*
+           MAIN CONTENT
+        */
+
+        .main-container {
+
+            width: 95%;
+
+            max-width: 1300px;
+
+            margin: 28px auto;
+        }
+
+
+        /*
+           PAGE HEADING
+        */
+
+        .page-heading {
+
+            margin-bottom: 25px;
+
+            padding: 25px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #198754,
+                            #20a96b
+                    );
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 5px 18px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.13
+                    );
+        }
+
+
+        .page-heading h2 {
+
+            margin: 0 0 8px;
+
+            font-size: 29px;
+        }
+
+
+        .page-heading p {
+
+            margin: 0;
+
+            line-height: 1.6;
+        }
+
+
+        /*
+           FORM CARD
+        */
+
+        .form-card {
+
+            padding: 25px;
+
+            background-color: white;
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 4px 15px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.10
+                    );
+        }
+
+
+        .form-card h2 {
+
+            margin-top: 0;
+
+            color: #1e3a5f;
+        }
+
+
+        .bus-form {
+
+            display: grid;
+
+            grid-template-columns:
+
+                    repeat(
+
+                            auto-fit,
+
+                            minmax(
+                                    210px,
+                                    1fr
+                            )
+
+                    );
+
+            gap: 18px;
+
+            align-items: end;
+        }
+
+
+        .input-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+
+        label {
+
+            color: #37474f;
+
+            font-weight: bold;
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border:
+                    1px solid
+                    #b8c1c7;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            outline: none;
+        }
+
+
+        input:focus,
+        select:focus {
+
+            border-color: #1e6fa8;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(
+                            30,
+                            111,
+                            168,
+                            0.14
+                    );
+        }
+
+
+        .form-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .save-button,
+        .cancel-button {
+
+            padding: 12px 20px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .save-button {
+
+            background-color: #198754;
+        }
+
+
+        .cancel-button {
+
+            display: none;
+
+            background-color: #6c757d;
+        }
+
+
+        .save-button:hover,
+        .cancel-button:hover {
+
+            opacity: 0.88;
+        }
+
+
+        /*
+           MESSAGE
+        */
+
+        #message {
+
+            display: none;
+
+            margin: 20px 0;
+
+            padding: 14px;
+
+            border-radius: 9px;
+
+            font-weight: bold;
+
+            text-align: center;
+        }
+
+
+        .success-message {
+
+            color: #0f5132;
+
+            background-color: #d1e7dd;
+
+            border:
+                    1px solid
+                    #badbcc;
+        }
+
+
+        .error-message {
+
+            color: #842029;
+
+            background-color: #f8d7da;
+
+            border:
+                    1px solid
+                    #f5c2c7;
+        }
+
+
+        /*
+           BUS LIST
+        */
+
+        .list-card {
+
+            margin-top: 25px;
+
+            padding: 25px;
+
+            background-color: white;
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 4px 15px
+                    rgba(
+                            0,
+                            0,
+                            0,
+                            0.10
+                    );
+        }
+
+
+        .list-header {
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .list-header h2 {
+
+            margin: 0;
+
+            color: #1e3a5f;
+        }
+
+
+        .search-container {
+
+            display: flex;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .search-container input {
+
+            width: 260px;
+        }
+
+
+        .refresh-button {
+
+            padding: 11px 16px;
+
+            color: white;
+
+            background-color: #0d6efd;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        /*
+           TABLE
+        */
+
+        .table-container {
+
+            overflow-x: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 850px;
+        }
+
+
+        th {
+
+            padding: 14px;
+
+            color: white;
+
+            background-color: #1e3a5f;
+
+            text-align: left;
+        }
+
+
+        td {
+
+            padding: 14px;
+
+            border-bottom:
+                    1px solid
+                    #e4e8eb;
+        }
+
+
+        tbody tr:hover {
+
+            background-color: #f4f8fb;
+        }
+
+
+        .status {
+
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        .status-active {
+
+            color: #0f5132;
+
+            background-color: #d1e7dd;
+        }
+
+
+        .status-inactive {
+
+            color: #842029;
+
+            background-color: #f8d7da;
+        }
+
+
+        .edit-button,
+        .delete-button {
+
+            margin: 3px;
+
+            padding: 8px 12px;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 6px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .edit-button {
+
+            background-color: #f0ad00;
+        }
+
+
+        .delete-button {
+
+            background-color: #dc3545;
+        }
+
+
+        .edit-button:hover,
+        .delete-button:hover {
+
+            opacity: 0.85;
+        }
+
+
+        .empty-message {
+
+            padding: 30px;
+
+            color: #6c757d;
+
+            text-align: center;
+
+            font-weight: bold;
+        }
+
+
+        /*
+           MOBILE
+        */
+
+        @media (
+                max-width: 650px
+        ) {
+
+
+            .navbar {
+
+                padding: 15px;
+            }
+
+
+            .navigation-buttons {
+
+                width: 100%;
+            }
+
+
+            .dashboard-button,
+            .logout-button {
+
+                flex: 1;
+
+                text-align: center;
+            }
+
+
+            .page-heading h2 {
+
+                font-size: 24px;
+            }
+
+
+            .search-container {
+
+                width: 100%;
+            }
+
+
+            .search-container input {
+
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- NAVIGATION -->
+
+<header class="navbar">
+
+
+    <div class="brand">
+
+
+        <div class="brand-icon">
+
+            🚌
+
+        </div>
+
+
+        <div>
+
+
+            <h1>
+
+                Bus Management
+
+            </h1>
+
+
+            <p>
+
+                College Bus Tracking System
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="navigation-buttons">
+
+
+        <a
+
+                href="/admin-dashboard.html"
+
+                class="dashboard-button"
+
+        >
+
+            ⬅ Dashboard
+
+        </a>
+
+
+        <form
+
+                action="/logout"
+
+                method="POST"
+
+        >
+
+
+            <button
+
+                    type="submit"
+
+                    class="logout-button"
+
+            >
+
+                🚪 Logout
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+</header>
+
+
+
+<main class="main-container">
+
+
+    <!-- PAGE HEADING -->
+
+    <section class="page-heading">
+
+
+        <h2>
+
+            🚌 Manage College Buses
+
+        </h2>
+
+
+        <p>
+
+            Add new buses, update existing
+            bus information and manage the
+            current bus status.
+
+        </p>
+
+
+    </section>
+
+
+
+    <!-- ADD OR UPDATE FORM -->
+
+    <section class="form-card">
+
+
+        <h2 id="formTitle">
+
+            ➕ Add New Bus
+
+        </h2>
+
+
+        <form
+
+                id="busForm"
+
+                class="bus-form"
+
+        >
+
+
+            <!-- HIDDEN BUS ID -->
+
+            <input
+
+                    type="hidden"
+
+                    id="busId"
+
+            >
+
+
+
+            <!-- BUS NUMBER -->
+
+            <div class="input-group">
+
+
+                <label for="busNumber">
+
+                    Bus Number
+
+                </label>
+
+
+                <input
+
+                        type="text"
+
+                        id="busNumber"
+
+                        placeholder="Example: TN-28-AB-1234"
+
+                        required
+
+                >
+
+
+            </div>
+
+
+
+            <!-- BUS NAME -->
+
+            <div class="input-group">
+
+
+                <label for="busName">
+
+                    Bus Name
+
+                </label>
+
+
+                <input
+
+                        type="text"
+
+                        id="busName"
+
+                        placeholder="Example: Namakkal Bus"
+
+                        required
+
+                >
+
+
+            </div>
+
+
+
+            <!-- CAPACITY -->
+
+            <div class="input-group">
+
+
+                <label for="capacity">
+
+                    Student Capacity
+
+                </label>
+
+
+                <input
+
+                        type="number"
+
+                        id="capacity"
+
+                        min="1"
+
+                        placeholder="Example: 50"
+
+                        required
+
+                >
+
+
+            </div>
+
+
+
+            <!-- STATUS -->
+
+            <div class="input-group">
+
+
+                <label for="status">
+
+                    Bus Status
+
+                </label>
+
+
+                <select
+
+                        id="status"
+
+                        required
+
+                >
+
+
+                    <option value="ACTIVE">
+
+                        ACTIVE
+
+                    </option>
+
+
+                    <option value="INACTIVE">
+
+                        INACTIVE
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+
+            <!-- FORM BUTTONS -->
+
+            <div class="form-buttons">
+
+
+                <button
+
+                        type="submit"
+
+                        id="saveButton"
+
+                        class="save-button"
+
+                >
+
+                    ➕ Add Bus
+
+                </button>
+
+
+                <button
+
+                        type="button"
+
+                        id="cancelButton"
+
+                        class="cancel-button"
+
+                        onclick="resetForm()"
+
+                >
+
+                    ✖ Cancel Edit
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+
+    </section>
+
+
+
+    <!-- SUCCESS OR ERROR -->
+
+    <div id="message"></div>
+
+
+
+    <!-- BUS LIST -->
+
+    <section class="list-card">
+
+
+        <div class="list-header">
+
+
+            <h2>
+
+                📋 All Buses
+
+                (<span id="busCount">0</span>)
+
+            </h2>
+
+
+
+            <div class="search-container">
+
+
+                <input
+
+                        type="text"
+
+                        id="searchInput"
+
+                        placeholder="Search bus number or name..."
+
+                        oninput="searchBuses()"
+
+                >
+
+
+                <button
+
+                        class="refresh-button"
+
+                        onclick="loadBuses()"
+
+                >
+
+                    🔄 Refresh
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="table-container">
+
+
+            <table>
+
+
+                <thead>
+
+
+                <tr>
+
+
+                    <th>
+
+                        ID
+
+                    </th>
+
+
+                    <th>
+
+                        Bus Number
+
+                    </th>
+
+
+                    <th>
+
+                        Bus Name
+
+                    </th>
+
+
+                    <th>
+
+                        Capacity
+
+                    </th>
+
+
+                    <th>
+
+                        Status
+
+                    </th>
+
+
+                    <th>
+
+                        Actions
+
+                    </th>
+
+
+                </tr>
+
+
+                </thead>
+
+
+                <tbody id="busTableBody">
+
+
+                <tr>
+
+
+                    <td
+
+                            colspan="6"
+
+                            class="empty-message"
+
+                    >
+
+                        Loading buses...
+
+                    </td>
+
+
+                </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+
+    /*
+       STORE ALL BUSES
+
+       This array is used
+       for searching.
+    */
+
+
+    let allBuses = [];
+
+
+
+    /*
+       FORM SUBMIT
+
+       If busId is empty:
+       ADD BUS
+
+       If busId contains ID:
+       UPDATE BUS
+    */
+
+
+    document
+
+        .getElementById(
+
+            "busForm"
+
+        )
+
+        .addEventListener(
+
+            "submit",
+
+            async function (
+
+                event
+
+            ) {
+
+
+                event.preventDefault();
+
+
+
+                const busId =
+
+                    document.getElementById(
+
+                        "busId"
+
+                    ).value;
+
+
+
+                const busData = {
+
+
+                    busNumber:
+
+                        document
+
+                            .getElementById(
+
+                                "busNumber"
+
+                            )
+
+                            .value
+
+                            .trim(),
+
+
+                    busName:
+
+                        document
+
+                            .getElementById(
+
+                                "busName"
+
+                            )
+
+                            .value
+
+                            .trim(),
+
+
+                    capacity:
+
+                        Number(
+
+                            document
+
+                                .getElementById(
+
+                                    "capacity"
+
+                                )
+
+                                .value
+
+                        ),
+
+
+                    status:
+
+                        document
+
+                            .getElementById(
+
+                                "status"
+
+                            )
+
+                            .value
+
+
+                };
+
+
+
+                /*
+                   VALIDATION
+                */
+
+
+                if (
+
+                    busData.busNumber
+
+                    ===
+
+                    ""
+
+                    ||
+
+                    busData.busName
+
+                    ===
+
+                    ""
+
+                    ||
+
+                    busData.capacity
+
+                    <=
+
+                    0
+
+                ) {
+
+
+                    showMessage(
+
+                        "❌ Enter valid bus information.",
+
+                        false
+
+                    );
+
+
+                    return;
+
+                }
+
+
+
+                /*
+                   ADD OR UPDATE
+                */
+
+
+                if (
+
+                    busId
+
+                    ===
+
+                    ""
+
+                ) {
+
+
+                    await addBus(
+
+                        busData
+
+                    );
+
+
+                }
+
+
+                else {
+
+
+                    await updateBus(
+
+                        busId,
+
+                        busData
+
+                    );
+
+
+                }
+
+
+            }
+
+        );
+
+
+
+    /*
+       ADD NEW BUS
+    */
+
+
+    async function addBus(
+
+        busData
+
+    ) {
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "/api/buses",
+
+
+                    {
+
+
+                        method:
+
+                            "POST",
+
+
+                        headers:
+
+                            {
+
+
+                                "Content-Type":
+
+                                    "application/json"
+
+
+                            },
+
+
+                        body:
+
+                            JSON.stringify(
+
+                                busData
+
+                            )
+
+
+                    }
+
+
+                );
+
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                const errorText =
+
+                    await response.text();
+
+
+                throw new Error(
+
+                    errorText
+
+                    ||
+
+                    "Unable to add bus"
+
+                );
+
+
+            }
+
+
+
+            const savedBus =
+
+                await response.json();
+
+
+
+            showMessage(
+
+
+                "✅ Bus "
+
+                + savedBus.busNumber
+
+                + " added successfully.",
+
+
+                true
+
+
+            );
+
+
+
+            resetForm();
+
+
+            await loadBuses();
+
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            console.error(
+
+                error
+
+            );
+
+
+            showMessage(
+
+
+                "❌ Unable to add bus. "
+
+                + "The bus number may already exist.",
+
+
+                false
+
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       UPDATE EXISTING BUS
+    */
+
+
+    async function updateBus(
+
+        busId,
+
+        busData
+
+    ) {
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "/api/buses/"
+
+                    + busId,
+
+
+                    {
+
+
+                        method:
+
+                            "PUT",
+
+
+                        headers:
+
+                            {
+
+
+                                "Content-Type":
+
+                                    "application/json"
+
+
+                            },
+
+
+                        body:
+
+                            JSON.stringify(
+
+                                busData
+
+                            )
+
+
+                    }
+
+
+                );
+
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                throw new Error(
+
+                    "Unable to update bus"
+
+                );
+
+
+            }
+
+
+
+            const updatedBus =
+
+                await response.json();
+
+
+
+            showMessage(
+
+
+                "✅ Bus "
+
+                + updatedBus.busNumber
+
+                + " updated successfully.",
+
+
+                true
+
+
+            );
+
+
+
+            resetForm();
+
+
+            await loadBuses();
+
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            console.error(
+
+                error
+
+            );
+
+
+            showMessage(
+
+
+                "❌ Unable to update the bus.",
+
+
+                false
+
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       LOAD ALL BUSES
+    */
+
+
+    async function loadBuses() {
+
+
+        const tableBody =
+
+            document.getElementById(
+
+                "busTableBody"
+
+            );
+
+
+
+        tableBody.innerHTML =
+
+
+            `
+
+            <tr>
+
+                <td
+
+                    colspan="6"
+
+                    class="empty-message"
+
+                >
+
+                    Loading buses...
+
+                </td>
+
+            </tr>
+
+            `;
+
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/buses"
+
+                );
+
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                throw new Error(
+
+                    "Unable to load buses"
+
+                );
+
+
+            }
+
+
+
+            allBuses =
+
+                await response.json();
+
+
+
+            displayBuses(
+
+                allBuses
+
+            );
+
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            console.error(
+
+                error
+
+            );
+
+
+
+            tableBody.innerHTML =
+
+
+                `
+
+                <tr>
+
+                    <td
+
+                        colspan="6"
+
+                        class="empty-message"
+
+                    >
+
+                        ❌ Unable to load buses.
+
+                    </td>
+
+                </tr>
+
+                `;
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       DISPLAY BUSES
+    */
+
+
+    function displayBuses(
+
+        buses
+
+    ) {
+
+
+        const tableBody =
+
+            document.getElementById(
+
+                "busTableBody"
+
+            );
+
+
+
+        document
+
+            .getElementById(
+
+                "busCount"
+
+            )
+
+            .innerText =
+
+                buses.length;
+
+
+
+        if (
+
+            buses.length
+
+            ===
+
+            0
+
+        ) {
+
+
+            tableBody.innerHTML =
+
+
+                `
+
+                <tr>
+
+                    <td
+
+                        colspan="6"
+
+                        class="empty-message"
+
+                    >
+
+                        No buses found.
+
+                    </td>
+
+                </tr>
+
+                `;
+
+
+            return;
+
+        }
+
+
+
+        tableBody.innerHTML =
+
+            "";
+
+
+
+        buses.forEach(
+
+
+            function (
+
+                bus
+
+            ) {
+
+
+                const row =
+
+                    document.createElement(
+
+                        "tr"
+
+                    );
+
+
+
+                const statusClass =
+
+
+                    bus.status
+
+                    ===
+
+                    "ACTIVE"
+
+
+                        ?
+
+
+                        "status-active"
+
+
+                        :
+
+
+                        "status-inactive";
+
+
+
+                row.innerHTML =
+
+
+                    `
+
+                    <td>
+
+                        ${bus.id}
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+
+                            ${escapeHtml(
+
+                                bus.busNumber
+
+                            )}
+
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+
+                            bus.busName
+
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${bus.capacity}
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+
+                            class="
+
+                                status
+
+                                ${statusClass}
+
+                            "
+
+                        >
+
+                            ${escapeHtml(
+
+                                bus.status
+
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+
+                        <button
+
+                            class="edit-button"
+
+                            onclick="editBus(
+
+                                ${bus.id}
+
+                            )"
+
+                        >
+
+                            ✏️ Edit
+
+                        </button>
+
+
+                        <button
+
+                            class="delete-button"
+
+                            onclick="deleteBus(
+
+                                ${bus.id},
+
+                                '${escapeForJavaScript(
+
+                                    bus.busNumber
+
+                                )}'
+
+                            )"
+
+                        >
+
+                            🗑️ Delete
+
+                        </button>
+
+
+                    </td>
+
+                    `;
+
+
+
+                tableBody.appendChild(
+
+                    row
+
+                );
+
+
+            }
+
+
+        );
+
+
+    }
+
+
+
+    /*
+       OPEN BUS DATA
+       IN EDIT FORM
+    */
+
+
+    function editBus(
+
+        busId
+
+    ) {
+
+
+        const selectedBus =
+
+            allBuses.find(
+
+
+                bus =>
+
+                    bus.id
+
+                    ===
+
+                    busId
+
+
+            );
+
+
+
+        if (
+
+            !selectedBus
+
+        ) {
+
+
+            showMessage(
+
+                "❌ Bus was not found.",
+
+                false
+
+            );
+
+
+            return;
+
+        }
+
+
+
+        document
+
+            .getElementById(
+
+                "busId"
+
+            )
+
+            .value =
+
+                selectedBus.id;
+
+
+
+        document
+
+            .getElementById(
+
+                "busNumber"
+
+            )
+
+            .value =
+
+                selectedBus.busNumber;
+
+
+
+        document
+
+            .getElementById(
+
+                "busName"
+
+            )
+
+            .value =
+
+                selectedBus.busName;
+
+
+
+        document
+
+            .getElementById(
+
+                "capacity"
+
+            )
+
+            .value =
+
+                selectedBus.capacity;
+
+
+
+        document
+
+            .getElementById(
+
+                "status"
+
+            )
+
+            .value =
+
+                selectedBus.status;
+
+
+
+        document
+
+            .getElementById(
+
+                "formTitle"
+
+            )
+
+            .innerText =
+
+                "✏️ Update Bus";
+
+
+
+        document
+
+            .getElementById(
+
+                "saveButton"
+
+            )
+
+            .innerText =
+
+                "💾 Save Changes";
+
+
+
+        document
+
+            .getElementById(
+
+                "cancelButton"
+
+            )
+
+            .style.display =
+
+                "inline-block";
+
+
+
+        window.scrollTo(
+
+
+            {
+
+                top:
+
+                    0,
+
+
+                behavior:
+
+                    "smooth"
+
+            }
+
+
+        );
+
+
+    }
+
+
+
+    /*
+       DELETE BUS
+    */
+
+
+    async function deleteBus(
+
+        busId,
+
+        busNumber
+
+    ) {
+
+
+        const confirmed =
+
+            confirm(
+
+
+                "Are you sure you want "
+
+                + "to delete bus "
+
+                + busNumber
+
+                + "?"
+
+
+            );
+
+
+
+        if (
+
+            !confirmed
+
+        ) {
+
+
+            return;
+
+        }
+
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+
+                    "/api/buses/"
+
+                    + busId,
+
+
+                    {
+
+
+                        method:
+
+                            "DELETE"
+
+
+                    }
+
+
+                );
+
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+
+                throw new Error(
+
+                    "Unable to delete bus"
+
+                );
+
+
+            }
+
+
+
+            showMessage(
+
+
+                "✅ Bus "
+
+                + busNumber
+
+                + " deleted successfully.",
+
+
+                true
+
+
+            );
+
+
+
+            resetForm();
+
+
+            await loadBuses();
+
+
+        }
+
+
+        catch (
+
+            error
+
+        ) {
+
+
+            console.error(
+
+                error
+
+            );
+
+
+            showMessage(
+
+
+                "❌ Unable to delete this bus. "
+
+                + "The bus may have trip or "
+
+                + "location records.",
+
+
+                false
+
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+    /*
+       SEARCH BUSES
+    */
+
+
+    function searchBuses() {
+
+
+        const searchText =
+
+            document
+
+                .getElementById(
+
+                    "searchInput"
+
+                )
+
+                .value
+
+                .toLowerCase()
+
+                .trim();
+
+
+
+        const filteredBuses =
+
+            allBuses.filter(
+
+
+                function (
+
+                    bus
+
+                ) {
+
+
+                    return (
+
+
+                        bus.busNumber
+
+                            .toLowerCase()
+
+                            .includes(
+
+                                searchText
+
+                            )
+
+
+                        ||
+
+
+                        bus.busName
+
+                            .toLowerCase()
+
+                            .includes(
+
+                                searchText
+
+                            )
+
+
+                        ||
+
+
+                        bus.status
+
+                            .toLowerCase()
+
+                            .includes(
+
+                                searchText
+
+                            )
+
+
+                    );
+
+
+                }
+
+
+            );
+
+
+
+        displayBuses(
+
+            filteredBuses
+
+        );
+
+
+    }
+
+
+
+    /*
+       RESET FORM
+    */
+
+
+    function resetForm() {
+
+
+        document
+
+            .getElementById(
+
+                "busForm"
+
+            )
+
+            .reset();
+
+
+
+        document
+
+            .getElementById(
+
+                "busId"
+
+            )
+
+            .value =
+
+                "";
+
+
+
+        document
+
+            .getElementById(
+
+                "status"
+
+            )
+
+            .value =
+
+                "ACTIVE";
+
+
+
+        document
+
+            .getElementById(
+
+                "formTitle"
+
+            )
+
+            .innerText =
+
+                "➕ Add New Bus";
+
+
+
+        document
+
+            .getElementById(
+
+                "saveButton"
+
+            )
+
+            .innerText =
+
+                "➕ Add Bus";
+
+
+
+        document
+
+            .getElementById(
+
+                "cancelButton"
+
+            )
+
+            .style.display =
+
+                "none";
+
+
+    }
+
+
+
+    /*
+       SHOW SUCCESS OR
+       ERROR MESSAGE
+    */
+
+
+    function showMessage(
+
+        message,
+
+        successful
+
+    ) {
+
+
+        const messageBox =
+
+            document.getElementById(
+
+                "message"
+
+            );
+
+
+
+        messageBox.innerText =
+
+            message;
+
+
+
+        messageBox.className =
+
+
+            successful
+
+
+                ?
+
+
+                "success-message"
+
+
+                :
+
+
+                "error-message";
+
+
+
+        messageBox.style.display =
+
+            "block";
+
+
+
+        setTimeout(
+
+
+            function () {
+
+
+                messageBox.style.display =
+
+                    "none";
+
+
+            },
+
+
+            5000
+
+
+        );
+
+
+    }
+
+
+
+    /*
+       PREVENT HTML CODE
+       FROM BEING DISPLAYED
+       AS REAL HTML
+    */
+
+
+    function escapeHtml(
+
+        value
+
+    ) {
+
+
+        if (
+
+            value
+
+            ===
+
+            null
+
+            ||
+
+            value
+
+            ===
+
+            undefined
+
+        ) {
+
+
+            return "";
+
+        }
+
+
+
+        return String(
+
+            value
+
+        )
+
+            .replaceAll(
+
+                "&",
+
+                "&amp;"
+
+            )
+
+            .replaceAll(
+
+                "<",
+
+                "&lt;"
+
+            )
+
+            .replaceAll(
+
+                ">",
+
+                "&gt;"
+
+            )
+
+            .replaceAll(
+
+                "\"",
+
+                "&quot;"
+
+            )
+
+            .replaceAll(
+
+                "'",
+
+                "&#039;"
+
+            );
+
+
+    }
+
+
+
+    /*
+       PREVENT BUS NUMBER
+       FROM BREAKING THE
+       JAVASCRIPT BUTTON
+    */
+
+
+    function escapeForJavaScript(
+
+        value
+
+    ) {
+
+
+        return String(
+
+            value
+
+        )
+
+            .replaceAll(
+
+                "\\",
+
+                "\\\\"
+
+            )
+
+            .replaceAll(
+
+                "'",
+
+                "\\'"
+
+            );
+
+
+    }
+
+
+
+    /*
+       LOAD BUSES WHEN
+       PAGE OPENS
+    */
+
+
+    loadBuses();
+
+
+</script>
+
+
+</body>
+
+</html>

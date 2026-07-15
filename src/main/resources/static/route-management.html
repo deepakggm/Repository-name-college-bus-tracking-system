@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Route Management</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #263238;
+            background-color: #f3f6fa;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            min-height: 70px;
+            padding: 15px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            flex-wrap: wrap;
+            gap: 15px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #123458,
+                            #1e6fa8
+                    );
+
+            box-shadow:
+                    0 3px 12px
+                    rgba(0, 0, 0, 0.18);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            font-size: 38px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .brand p {
+            margin: 4px 0 0;
+            color: #d8eaf8;
+            font-size: 13px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .dashboard-button {
+            padding: 11px 16px;
+
+            color: white;
+            background-color: #0d6efd;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .logout-button {
+            padding: 11px 16px;
+
+            color: white;
+            background-color: #dc3545;
+
+            border: none;
+            border-radius: 8px;
+
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .dashboard-button:hover,
+        .logout-button:hover {
+            opacity: 0.88;
+        }
+
+        /* MAIN */
+
+        .main-container {
+            width: 95%;
+            max-width: 1300px;
+            margin: 28px auto;
+        }
+
+        /* PAGE HEADING */
+
+        .page-heading {
+            margin-bottom: 25px;
+            padding: 25px;
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #6f42c1,
+                            #9258db
+                    );
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 5px 18px
+                    rgba(0, 0, 0, 0.13);
+        }
+
+        .page-heading h2 {
+            margin: 0 0 8px;
+            font-size: 29px;
+        }
+
+        .page-heading p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* FORM */
+
+        .form-card {
+            padding: 25px;
+
+            background-color: white;
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 4px 15px
+                    rgba(0, 0, 0, 0.10);
+        }
+
+        .form-card h2 {
+            margin-top: 0;
+            color: #1e3a5f;
+        }
+
+        .route-form {
+            display: grid;
+
+            grid-template-columns:
+                    repeat(
+                            auto-fit,
+                            minmax(210px, 1fr)
+                    );
+
+            gap: 18px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: #37474f;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+
+            border:
+                    1px solid
+                    #b8c1c7;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6f42c1;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(111, 66, 193, 0.15);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .save-button,
+        .cancel-button {
+            padding: 12px 20px;
+
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .save-button {
+            background-color: #198754;
+        }
+
+        .cancel-button {
+            display: none;
+            background-color: #6c757d;
+        }
+
+        /* MESSAGE */
+
+        #message {
+            display: none;
+
+            margin: 20px 0;
+            padding: 14px;
+
+            border-radius: 9px;
+
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success-message {
+            color: #0f5132;
+
+            background-color: #d1e7dd;
+
+            border:
+                    1px solid
+                    #badbcc;
+        }
+
+        .error-message {
+            color: #842029;
+
+            background-color: #f8d7da;
+
+            border:
+                    1px solid
+                    #f5c2c7;
+        }
+
+        /* ROUTE LIST */
+
+        .list-card {
+            margin-top: 25px;
+            padding: 25px;
+
+            background-color: white;
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 4px 15px
+                    rgba(0, 0, 0, 0.10);
+        }
+
+        .list-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .list-header h2 {
+            margin: 0;
+            color: #1e3a5f;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-container input {
+            width: 270px;
+        }
+
+        .refresh-button {
+            padding: 11px 16px;
+
+            color: white;
+            background-color: #0d6efd;
+
+            border: none;
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 850px;
+
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 14px;
+
+            color: white;
+            background-color: #1e3a5f;
+
+            text-align: left;
+        }
+
+        td {
+            padding: 14px;
+
+            border-bottom:
+                    1px solid
+                    #e4e8eb;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f1fb;
+        }
+
+        .distance {
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            color: #084298;
+            background-color: #cfe2ff;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .edit-button,
+        .delete-button {
+            margin: 3px;
+            padding: 8px 12px;
+
+            color: white;
+
+            border: none;
+            border-radius: 6px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .edit-button {
+            background-color: #f0ad00;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+        }
+
+        .empty-message {
+            padding: 30px;
+
+            color: #6c757d;
+
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 650px) {
+
+            .navbar {
+                padding: 15px;
+            }
+
+            .navigation-buttons {
+                width: 100%;
+            }
+
+            .dashboard-button,
+            .logout-button {
+                flex: 1;
+                text-align: center;
+            }
+
+            .search-container {
+                width: 100%;
+            }
+
+            .search-container input {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- NAVIGATION -->
+
+<header class="navbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🛣️
+        </div>
+
+        <div>
+
+            <h1>
+                Route Management
+            </h1>
+
+            <p>
+                College Bus Tracking System
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="navigation-buttons">
+
+        <a
+                href="/admin-dashboard.html"
+                class="dashboard-button"
+        >
+            ⬅ Dashboard
+        </a>
+
+
+        <form
+                action="/logout"
+                method="POST"
+        >
+
+            <button
+                    type="submit"
+                    class="logout-button"
+            >
+                🚪 Logout
+            </button>
+
+        </form>
+
+    </div>
+
+</header>
+
+
+<!-- MAIN -->
+
+<main class="main-container">
+
+
+    <!-- HEADING -->
+
+    <section class="page-heading">
+
+        <h2>
+            🛣️ Manage Bus Routes
+        </h2>
+
+        <p>
+            Add new routes, update route
+            information and manage the travel
+            paths used by college buses.
+        </p>
+
+    </section>
+
+
+    <!-- ADD AND UPDATE FORM -->
+
+    <section class="form-card">
+
+        <h2 id="formTitle">
+            ➕ Add New Route
+        </h2>
+
+
+        <form
+                id="routeForm"
+                class="route-form"
+        >
+
+
+            <!-- HIDDEN ROUTE ID -->
+
+            <input
+                    type="hidden"
+                    id="routeId"
+            >
+
+
+            <!-- ROUTE NAME -->
+
+            <div class="input-group">
+
+                <label for="routeName">
+                    Route Name
+                </label>
+
+                <input
+                        type="text"
+                        id="routeName"
+                        placeholder="Example: Belukurichi Route"
+                        required
+                >
+
+            </div>
+
+
+            <!-- STARTING LOCATION -->
+
+            <div class="input-group">
+
+                <label for="startingLocation">
+                    Starting Location
+                </label>
+
+                <input
+                        type="text"
+                        id="startingLocation"
+                        placeholder="Example: Belukurichi"
+                        required
+                >
+
+            </div>
+
+
+            <!-- ENDING LOCATION -->
+
+            <div class="input-group">
+
+                <label for="endingLocation">
+                    Destination
+                </label>
+
+                <input
+                        type="text"
+                        id="endingLocation"
+                        placeholder="Example: College Campus"
+                        required
+                >
+
+            </div>
+
+
+            <!-- DISTANCE -->
+
+            <div class="input-group">
+
+                <label for="distance">
+                    Distance in KM
+                </label>
+
+                <input
+                        type="number"
+                        id="distance"
+                        min="0.1"
+                        step="0.1"
+                        placeholder="Example: 35.5"
+                        required
+                >
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="form-buttons">
+
+                <button
+                        type="submit"
+                        id="saveButton"
+                        class="save-button"
+                >
+                    ➕ Add Route
+                </button>
+
+
+                <button
+                        type="button"
+                        id="cancelButton"
+                        class="cancel-button"
+                        onclick="resetForm()"
+                >
+                    ✖ Cancel Edit
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- SUCCESS OR ERROR -->
+
+    <div id="message"></div>
+
+
+    <!-- ROUTE TABLE -->
+
+    <section class="list-card">
+
+        <div class="list-header">
+
+            <h2>
+
+                📋 All Routes
+
+                (<span id="routeCount">0</span>)
+
+            </h2>
+
+
+            <div class="search-container">
+
+                <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search route or location..."
+                        oninput="searchRoutes()"
+                >
+
+
+                <button
+                        type="button"
+                        class="refresh-button"
+                        onclick="loadRoutes()"
+                >
+                    🔄 Refresh
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Route Name</th>
+
+                    <th>Starting Location</th>
+
+                    <th>Destination</th>
+
+                    <th>Distance</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="routeTableBody">
+
+                <tr>
+
+                    <td
+                            colspan="6"
+                            class="empty-message"
+                    >
+                        Loading routes...
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+
+    /*
+       STORE ALL ROUTES
+    */
+
+    let allRoutes = [];
+
+
+    /*
+       ADD OR UPDATE ROUTE
+    */
+
+    document
+        .getElementById(
+            "routeForm"
+        )
+        .addEventListener(
+            "submit",
+
+            async function (event) {
+
+
+                event.preventDefault();
+
+
+                const routeId =
+
+                    document
+                        .getElementById(
+                            "routeId"
+                        )
+                        .value;
+
+
+                /*
+                   THESE FIELD NAMES
+                   MATCH Route.java
+                */
+
+                const routeData = {
+
+
+                    routeName:
+
+                        document
+                            .getElementById(
+                                "routeName"
+                            )
+                            .value
+                            .trim(),
+
+
+                    startingLocation:
+
+                        document
+                            .getElementById(
+                                "startingLocation"
+                            )
+                            .value
+                            .trim(),
+
+
+                    endingLocation:
+
+                        document
+                            .getElementById(
+                                "endingLocation"
+                            )
+                            .value
+                            .trim(),
+
+
+                    distance:
+
+                        Number(
+
+                            document
+                                .getElementById(
+                                    "distance"
+                                )
+                                .value
+
+                        )
+
+                };
+
+
+                /*
+                   VALIDATE DATA
+                */
+
+                if (
+
+                    routeData.routeName
+                    ===
+                    ""
+
+                    ||
+
+                    routeData.startingLocation
+                    ===
+                    ""
+
+                    ||
+
+                    routeData.endingLocation
+                    ===
+                    ""
+
+                    ||
+
+                    routeData.distance
+                    <=
+                    0
+
+                ) {
+
+                    showMessage(
+
+                        "❌ Enter valid route information.",
+
+                        false
+
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                   ADD NEW ROUTE
+                */
+
+                if (
+
+                    routeId
+                    ===
+                    ""
+
+                ) {
+
+                    await addRoute(
+                        routeData
+                    );
+
+                }
+
+
+                /*
+                   UPDATE ROUTE
+                */
+
+                else {
+
+                    await updateRoute(
+
+                        routeId,
+
+                        routeData
+
+                    );
+
+                }
+
+            }
+
+        );
+
+
+    /*
+       ADD ROUTE
+    */
+
+    async function addRoute(
+        routeData
+    ) {
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/routes",
+
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+
+                            JSON.stringify(
+                                routeData
+                            )
+
+                    }
+
+                );
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+                const errorText =
+
+                    await response.text();
+
+
+                throw new Error(
+
+                    errorText
+
+                    ||
+
+                    "Unable to add route"
+
+                );
+
+            }
+
+
+            const savedRoute =
+
+                await response.json();
+
+
+            showMessage(
+
+                "✅ Route "
+
+                + savedRoute.routeName
+
+                + " added successfully.",
+
+                true
+
+            );
+
+
+            resetForm();
+
+
+            await loadRoutes();
+
+        }
+
+
+        catch (error) {
+
+
+            console.error(
+                error
+            );
+
+
+            showMessage(
+
+                "❌ Unable to add route. "
+                + "Check whether the route "
+                + "name already exists.",
+
+                false
+
+            );
+
+        }
+
+    }
+
+
+    /*
+       UPDATE ROUTE
+    */
+
+    async function updateRoute(
+
+        routeId,
+
+        routeData
+
+    ) {
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/routes/"
+                    + routeId,
+
+                    {
+
+                        method:
+                            "PUT",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+
+                            JSON.stringify(
+                                routeData
+                            )
+
+                    }
+
+                );
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+                throw new Error(
+
+                    "Unable to update route"
+
+                );
+
+            }
+
+
+            const updatedRoute =
+
+                await response.json();
+
+
+            showMessage(
+
+                "✅ Route "
+
+                + updatedRoute.routeName
+
+                + " updated successfully.",
+
+                true
+
+            );
+
+
+            resetForm();
+
+
+            await loadRoutes();
+
+        }
+
+
+        catch (error) {
+
+
+            console.error(
+                error
+            );
+
+
+            showMessage(
+
+                "❌ Unable to update the route.",
+
+                false
+
+            );
+
+        }
+
+    }
+
+
+    /*
+       LOAD ALL ROUTES
+    */
+
+    async function loadRoutes() {
+
+
+        const tableBody =
+
+            document
+                .getElementById(
+                    "routeTableBody"
+                );
+
+
+        tableBody.innerHTML =
+
+            `
+
+            <tr>
+
+                <td
+
+                    colspan="6"
+
+                    class="empty-message"
+
+                >
+
+                    Loading routes...
+
+                </td>
+
+            </tr>
+
+            `;
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/routes"
+
+                );
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+                throw new Error(
+
+                    "Unable to load routes. "
+
+                    + "HTTP status: "
+
+                    + response.status
+
+                );
+
+            }
+
+
+            const routeResponse =
+
+                await response.json();
+
+
+            /*
+               MAKE SURE THE API
+               RETURNS AN ARRAY
+            */
+
+            allRoutes =
+
+                Array.isArray(
+                    routeResponse
+                )
+
+                    ?
+
+                    routeResponse
+
+                    :
+
+                    [];
+
+
+            displayRoutes(
+                allRoutes
+            );
+
+        }
+
+
+        catch (error) {
+
+
+            console.error(
+
+                "Route loading error:",
+
+                error
+
+            );
+
+
+            tableBody.innerHTML =
+
+                `
+
+                <tr>
+
+                    <td
+
+                        colspan="6"
+
+                        class="empty-message"
+
+                    >
+
+                        ❌ Unable to load routes.
+
+                        Open the browser console
+
+                        to view the error.
+
+                    </td>
+
+                </tr>
+
+                `;
+
+        }
+
+    }
+
+
+    /*
+       DISPLAY ROUTES
+    */
+
+    function displayRoutes(
+        routes
+    ) {
+
+
+        const tableBody =
+
+            document
+                .getElementById(
+                    "routeTableBody"
+                );
+
+
+        document
+            .getElementById(
+                "routeCount"
+            )
+            .innerText =
+
+                routes.length;
+
+
+        if (
+
+            routes.length
+            ===
+            0
+
+        ) {
+
+            tableBody.innerHTML =
+
+                `
+
+                <tr>
+
+                    <td
+
+                        colspan="6"
+
+                        class="empty-message"
+
+                    >
+
+                        No routes found.
+
+                        Add your first route above.
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            return;
+
+        }
+
+
+        tableBody.innerHTML =
+            "";
+
+
+        routes.forEach(
+
+            function (route) {
+
+
+                const row =
+
+                    document
+                        .createElement(
+                            "tr"
+                        );
+
+
+                /*
+                   OLD DATABASE ROWS
+                   MAY HAVE NULL DISTANCE
+                */
+
+                const routeDistance =
+
+                    route.distance
+
+                    !==
+                    null
+
+                    &&
+
+                    route.distance
+
+                    !==
+                    undefined
+
+                        ?
+
+                        route.distance
+
+                        + " KM"
+
+                        :
+
+                        "Not added";
+
+
+                row.innerHTML =
+
+                    `
+
+                    <td>
+
+                        ${route.id}
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+
+                            ${escapeHtml(
+                                route.routeName
+                            )}
+
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            route.startingLocation
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            route.endingLocation
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="distance">
+
+                            ${escapeHtml(
+                                routeDistance
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+
+                        <button
+
+                            class="edit-button"
+
+                            onclick="editRoute(
+
+                                ${route.id}
+
+                            )"
+
+                        >
+
+                            ✏️ Edit
+
+                        </button>
+
+
+                        <button
+
+                            class="delete-button"
+
+                            onclick="deleteRoute(
+
+                                ${route.id}
+
+                            )"
+
+                        >
+
+                            🗑️ Delete
+
+                        </button>
+
+
+                    </td>
+
+                    `;
+
+
+                tableBody.appendChild(
+                    row
+                );
+
+            }
+
+        );
+
+    }
+
+
+    /*
+       EDIT ROUTE
+    */
+
+    function editRoute(
+        routeId
+    ) {
+
+
+        const selectedRoute =
+
+            allRoutes.find(
+
+                route =>
+
+                    route.id
+                    ===
+                    routeId
+
+            );
+
+
+        if (
+
+            !selectedRoute
+
+        ) {
+
+            showMessage(
+
+                "❌ Route was not found.",
+
+                false
+
+            );
+
+            return;
+
+        }
+
+
+        document
+            .getElementById(
+                "routeId"
+            )
+            .value =
+
+                selectedRoute.id;
+
+
+        document
+            .getElementById(
+                "routeName"
+            )
+            .value =
+
+                selectedRoute.routeName;
+
+
+        document
+            .getElementById(
+                "startingLocation"
+            )
+            .value =
+
+                selectedRoute
+                    .startingLocation;
+
+
+        document
+            .getElementById(
+                "endingLocation"
+            )
+            .value =
+
+                selectedRoute
+                    .endingLocation;
+
+
+        document
+            .getElementById(
+                "distance"
+            )
+            .value =
+
+                selectedRoute.distance
+
+                ??
+
+                "";
+
+
+        document
+            .getElementById(
+                "formTitle"
+            )
+            .innerText =
+
+                "✏️ Update Route";
+
+
+        document
+            .getElementById(
+                "saveButton"
+            )
+            .innerText =
+
+                "💾 Save Changes";
+
+
+        document
+            .getElementById(
+                "cancelButton"
+            )
+            .style.display =
+
+                "inline-block";
+
+
+        window.scrollTo({
+
+            top: 0,
+
+            behavior:
+                "smooth"
+
+        });
+
+    }
+
+
+    /*
+       DELETE ROUTE
+    */
+
+    async function deleteRoute(
+        routeId
+    ) {
+
+
+        const selectedRoute =
+
+            allRoutes.find(
+
+                route =>
+
+                    route.id
+                    ===
+                    routeId
+
+            );
+
+
+        const routeName =
+
+            selectedRoute
+
+                ?
+
+                selectedRoute.routeName
+
+                :
+
+                "this route";
+
+
+        const confirmed =
+
+            confirm(
+
+                "Are you sure you want "
+
+                + "to delete "
+
+                + routeName
+
+                + "?"
+
+            );
+
+
+        if (
+
+            !confirmed
+
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/routes/"
+                    + routeId,
+
+                    {
+
+                        method:
+                            "DELETE"
+
+                    }
+
+                );
+
+
+            if (
+
+                !response.ok
+
+            ) {
+
+                throw new Error(
+
+                    "Unable to delete route"
+
+                );
+
+            }
+
+
+            showMessage(
+
+                "✅ Route deleted successfully.",
+
+                true
+
+            );
+
+
+            resetForm();
+
+
+            await loadRoutes();
+
+        }
+
+
+        catch (error) {
+
+
+            console.error(
+                error
+            );
+
+
+            showMessage(
+
+                "❌ Unable to delete this route. "
+                + "It may be connected to a trip.",
+
+                false
+
+            );
+
+        }
+
+    }
+
+
+    /*
+       SEARCH ROUTES
+    */
+
+    function searchRoutes() {
+
+
+        const searchText =
+
+            document
+                .getElementById(
+                    "searchInput"
+                )
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        const filteredRoutes =
+
+            allRoutes.filter(
+
+                function (route) {
+
+
+                    return (
+
+                        String(
+
+                            route.routeName
+
+                            ||
+
+                            ""
+
+                        )
+
+                            .toLowerCase()
+
+                            .includes(
+                                searchText
+                            )
+
+
+                        ||
+
+
+                        String(
+
+                            route.startingLocation
+
+                            ||
+
+                            ""
+
+                        )
+
+                            .toLowerCase()
+
+                            .includes(
+                                searchText
+                            )
+
+
+                        ||
+
+
+                        String(
+
+                            route.endingLocation
+
+                            ||
+
+                            ""
+
+                        )
+
+                            .toLowerCase()
+
+                            .includes(
+                                searchText
+                            )
+
+                    );
+
+                }
+
+            );
+
+
+        displayRoutes(
+            filteredRoutes
+        );
+
+    }
+
+
+    /*
+       RESET FORM
+    */
+
+    function resetForm() {
+
+
+        document
+            .getElementById(
+                "routeForm"
+            )
+            .reset();
+
+
+        document
+            .getElementById(
+                "routeId"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "formTitle"
+            )
+            .innerText =
+
+                "➕ Add New Route";
+
+
+        document
+            .getElementById(
+                "saveButton"
+            )
+            .innerText =
+
+                "➕ Add Route";
+
+
+        document
+            .getElementById(
+                "cancelButton"
+            )
+            .style.display =
+
+                "none";
+
+    }
+
+
+    /*
+       SHOW MESSAGE
+    */
+
+    function showMessage(
+
+        message,
+
+        successful
+
+    ) {
+
+
+        const messageBox =
+
+            document
+                .getElementById(
+                    "message"
+                );
+
+
+        messageBox.innerText =
+            message;
+
+
+        messageBox.className =
+
+            successful
+
+                ?
+
+                "success-message"
+
+                :
+
+                "error-message";
+
+
+        messageBox.style.display =
+            "block";
+
+
+        setTimeout(
+
+            function () {
+
+                messageBox.style.display =
+                    "none";
+
+            },
+
+            5000
+
+        );
+
+    }
+
+
+    /*
+       PREVENT HTML INJECTION
+    */
+
+    function escapeHtml(
+        value
+    ) {
+
+
+        if (
+
+            value
+            ===
+            null
+
+            ||
+
+            value
+            ===
+            undefined
+
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                "\"",
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+
+    /*
+       LOAD ROUTES WHEN
+       PAGE OPENS
+    */
+
+    loadRoutes();
+
+
+</script>
+
+</body>
+
+</html>
